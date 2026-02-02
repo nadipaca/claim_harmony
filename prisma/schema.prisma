@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  CONSUMER
+  CONTRACTOR
+  ADMIN
+}
+
+enum ClaimType {
+  ROOF
+  WATER
+  FIRE
+  MOLD
+  OTHER
+}
+
+enum ClaimStatus {
+  NEW
+  ACCEPTED
+}
+
+enum ClaimEventType {
+  CLAIM_CREATED
+  CONTRACTOR_ACCEPTED
+  DOCUMENT_UPLOADED
+}
+
+// Models
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         Role
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  claimsCreated  Claim[]         @relation("ClaimsCreatedByConsumer")
+  claimsAccepted Claim[]         @relation("ClaimsAcceptedByContractor")
+  events         ClaimEvent[]
+  documents      ClaimDocument[]
+}
+
+model InsuranceCompany {
+  id              String   @id @default(cuid())
+  key             String   @unique
+  name            String
+  claimsPortalUrl String
+  createdAt       DateTime @default(now())
+
+  // Relations
+  claims Claim[]
+}
+
+model Claim {
+  id          String      @id @default(cuid())
+  claimNumber String      @unique
+  address     String
+  type        ClaimType
+  description String
+  status      ClaimStatus @default(NEW)
+
+  // Consumer relation
+  consumerId String
+  consumer   User   @relation("ClaimsCreatedByConsumer", fields: [consumerId], references: [id])
+
+  // Insurance company relation
+  insuranceCompanyId String
+  insuranceCompany   InsuranceCompany @relation(fields: [insuranceCompanyId], references: [id])
+
+  // Contractor relation (optional)
+  acceptedByContractorId String?
+  acceptedByContractor   User?   @relation("ClaimsAcceptedByContractor", fields: [acceptedByContractorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  events    ClaimEvent[]
+  documents ClaimDocument[]
+}
+
+model ClaimEvent {
+  id        String         @id @default(cuid())
+  claimId   String
+  claim     Claim          @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  eventType ClaimEventType
+  actorRole Role
+
+  // Optional actor user
+  actorUserId String?
+  actorUser   User?   @relation(fields: [actorUserId], references: [id])
+
+  createdAt DateTime @default(now())
+  meta      Json?
+}
+
+model ClaimDocument {
+  id         String  @id @default(cuid())
+  claimId    String
+  claim      Claim   @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  filename   String
+  docType    String?
+  storageUrl String?
+
+  uploadedByUserId String
+  uploadedByUser   User   @relation(fields: [uploadedByUserId], references: [id])
+
+  uploadedAt DateTime @default(now())
+}
