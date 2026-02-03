@@ -3,6 +3,10 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { prisma } from "./prisma"
 import bcrypt from "bcryptjs"
 
+// Generate a dummy hash at module load time for constant-time comparison
+// This prevents timing attacks by ensuring we always perform bcrypt.compare
+const DUMMY_PASSWORD_HASH = bcrypt.hashSync('dummy-password-for-timing-protection', 10)
+
 export const authOptions: AuthOptions = {
     providers: [
         CredentialsProvider({
@@ -16,22 +20,57 @@ export const authOptions: AuthOptions = {
                     return null
                 }
 
-                // Find user by email
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email }
-                })
-
-                if (!user) {
+                // Basic email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                if (!emailRegex.test(credentials.email)) {
+                    if (process.env.NODE_ENV === 'development') {
+                        console.log('[Auth] Invalid email format')
+                    }
                     return null
                 }
 
-                // Verify password
-                const isValidPassword = await bcrypt.compare(
-                    credentials.password,
-                    user.passwordHash
-                )
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(`\n[Auth] Login attempt for: ${credentials.email}`)
+                }
+                const start = Date.now();
 
-                if (!isValidPassword) {
+                // 1. DB Lookup with minimal fields
+                const dbStart = Date.now();
+                const user = await prisma.user.findUnique({
+                    where: { email: credentials.email.toLowerCase() },
+                    select: {
+                        id: true,
+                        email: true,
+                        passwordHash: true,
+                        role: true,
+                        name: true,
+                    }
+                })
+                const dbEnd = Date.now();
+
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(`[Auth] DB Lookup took: ${dbEnd - dbStart}ms`)
+                }
+
+                // 2. Password verification (ALWAYS run to prevent timing attacks)
+                const bcryptStart = Date.now();
+                const passwordToCheck = user?.passwordHash ?? DUMMY_PASSWORD_HASH
+
+                const isValid = await bcrypt.compare(
+                    credentials.password,
+                    passwordToCheck
+                )
+                const bcryptEnd = Date.now();
+
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(`[Auth] Password verification took: ${bcryptEnd - bcryptStart}ms`)
+                    console.log(`[Auth] Total auth processing: ${bcryptEnd - start}ms\n`)
+                }
+
+                if (!user || !isValid) {
+                    if (process.env.NODE_ENV === 'development') {
+                        console.log(`[Auth] Authentication failed (user found: ${!!user}, password valid: ${isValid})`)
+                    }
                     return null
                 }
 
