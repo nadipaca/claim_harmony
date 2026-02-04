@@ -52,26 +52,62 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex" style={{ background: '#E5E7EB' }}>
-            <div className="w-full max-w-6xl mx-auto flex rounded-2xl overflow-hidden shadow-xl my-8">
+        <div style={{
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#E5E7EB',
+            padding: '2rem'
+        }}>
+            <div style={{
+                display: 'flex',
+                width: '100%',
+                maxWidth: '900px',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)'
+            }}>
                 {/* Left Panel - Branded */}
-                <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12" style={{ background: 'var(--ch-navy)' }}>
+                <div style={{
+                    width: '50%',
+                    background: '#1E3A8A',
+                    padding: '48px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    minHeight: '500px'
+                }}>
                     <div>
                         {/* Logo */}
-                        <div className="flex items-center space-x-3 mb-16">
-                            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'var(--ch-gold)' }}>
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '64px' }}>
+                            <div style={{
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '8px',
+                                background: '#D4AF37',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                 </svg>
                             </div>
-                            <span className="text-2xl font-bold text-white">ClaimHarmony</span>
+                            <span style={{ fontSize: '24px', fontWeight: 'bold', color: 'white' }}>ClaimHarmony</span>
                         </div>
 
                         {/* Heading */}
-                        <h1 className="text-5xl font-bold text-white leading-tight mb-6">
+                        <h1 style={{
+                            fontSize: '42px',
+                            fontWeight: 'bold',
+                            color: 'white',
+                            lineHeight: '1.2',
+                            marginBottom: '24px'
+                        }}>
                             Simplify your<br />property claims.
                         </h1>
-                        <p className="text-lg text-blue-100">
+                        <p style={{ fontSize: '16px', color: '#93C5FD', lineHeight: '1.6' }}>
                             The trusted Florida network connecting<br />
                             homeowners with vetted restoration<br />
                             professionals.
@@ -79,59 +115,104 @@ export default function LoginPage() {
                     </div>
 
                     {/* Footer */}
-                    <div className="text-sm text-blue-200">
+                    <div style={{ fontSize: '14px', color: '#93C5FD' }}>
                         © 2026 ClaimHarmony Platform. All rights reserved.
                     </div>
                 </div>
 
                 {/* Right Panel - Form */}
-                <div className="w-full lg:w-1/2 bg-white p-12 flex items-center justify-center">
-                    <div className="w-full max-w-md">
-                        <div className="mb-10">
-                            <h2 className="text-3xl font-bold mb-2" style={{ color: 'var(--ch-text)' }}>
+                <div style={{
+                    width: '50%',
+                    background: 'white',
+                    padding: '48px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                    <div style={{ width: '100%', maxWidth: '320px' }}>
+                        <div style={{ marginBottom: '32px' }}>
+                            <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#0F172A', marginBottom: '8px' }}>
                                 Welcome back
                             </h2>
-                            <p className="text-gray-500">
+                            <p style={{ color: '#6B7280' }}>
                                 Log in to your dashboard.
                             </p>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        <form onSubmit={handleSubmit}>
                             {/* Email Field */}
-                            <div>
-                                <label htmlFor="email" className="block text-xs font-semibold uppercase mb-2" style={{ color: '#6B7280', letterSpacing: '0.05em' }}>
+                            <div style={{ marginBottom: '20px' }}>
+                                <label style={{
+                                    display: 'block',
+                                    fontSize: '12px',
+                                    fontWeight: '600',
+                                    color: '#6B7280',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em',
+                                    marginBottom: '8px'
+                                }}>
                                     Email Address
                                 </label>
                                 <input
-                                    id="email"
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    className="ch-input"
                                     placeholder="name@company.com"
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px 16px',
+                                        border: '1px solid #E5E7EB',
+                                        borderRadius: '8px',
+                                        fontSize: '14px',
+                                        outline: 'none',
+                                        boxSizing: 'border-box'
+                                    }}
                                 />
                             </div>
 
                             {/* Password Field */}
-                            <div>
-                                <label htmlFor="password" className="block text-xs font-semibold uppercase mb-2" style={{ color: '#6B7280', letterSpacing: '0.05em' }}>
+                            <div style={{ marginBottom: '24px' }}>
+                                <label style={{
+                                    display: 'block',
+                                    fontSize: '12px',
+                                    fontWeight: '600',
+                                    color: '#6B7280',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em',
+                                    marginBottom: '8px'
+                                }}>
                                     Password
                                 </label>
                                 <input
-                                    id="password"
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    className="ch-input"
                                     placeholder="••••••••"
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px 16px',
+                                        border: '1px solid #E5E7EB',
+                                        borderRadius: '8px',
+                                        fontSize: '14px',
+                                        outline: 'none',
+                                        boxSizing: 'border-box'
+                                    }}
                                 />
                             </div>
 
                             {/* Error Message */}
                             {error && (
-                                <div className="ch-error rounded-lg px-4 py-3 text-sm">
+                                <div style={{
+                                    background: '#FEF2F2',
+                                    border: '1px solid #FECACA',
+                                    color: '#DC2626',
+                                    padding: '12px',
+                                    borderRadius: '8px',
+                                    fontSize: '14px',
+                                    marginBottom: '16px'
+                                }}>
                                     {error}
                                 </div>
                             )}
@@ -140,21 +221,28 @@ export default function LoginPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="primary-action w-full"
+                                style={{
+                                    width: '100%',
+                                    padding: '14px',
+                                    background: '#1E3A8A',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '14px',
+                                    fontWeight: '600',
+                                    cursor: loading ? 'not-allowed' : 'pointer',
+                                    opacity: loading ? 0.5 : 1
+                                }}
                             >
                                 {loading ? 'Signing in...' : 'Sign In'}
                             </button>
                         </form>
 
                         {/* Sign Up Link */}
-                        <div className="mt-8 text-center">
-                            <p className="text-sm text-gray-600">
+                        <div style={{ marginTop: '24px', textAlign: 'center' }}>
+                            <p style={{ fontSize: '14px', color: '#6B7280' }}>
                                 Don't have an account?{' '}
-                                <Link
-                                    href="/signup"
-                                    className="font-semibold transition-colors hover:underline"
-                                    style={{ color: 'var(--ch-navy)' }}
-                                >
+                                <Link href="/signup" style={{ color: '#1E3A8A', fontWeight: '600', textDecoration: 'underline' }}>
                                     Sign up
                                 </Link>
                             </p>
@@ -162,11 +250,11 @@ export default function LoginPage() {
 
                         {/* Test Credentials - Development Only */}
                         {process.env.NODE_ENV === 'development' && (
-                            <div className="mt-8 pt-6" style={{ borderTop: '1px solid var(--ch-border)' }}>
-                                <p className="text-xs font-medium mb-2" style={{ color: 'var(--ch-text)' }}>
+                            <div style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
+                                <p style={{ fontSize: '12px', fontWeight: '500', color: '#0F172A', marginBottom: '8px' }}>
                                     Test Credentials:
                                 </p>
-                                <div className="space-y-1 text-xs" style={{ color: '#6B7280' }}>
+                                <div style={{ fontSize: '12px', color: '#6B7280' }}>
                                     <p>Consumer: consumer@test.com / Password123!</p>
                                     <p>Contractor: contractor@test.com / Password123!</p>
                                 </div>
