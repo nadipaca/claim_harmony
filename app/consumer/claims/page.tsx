@@ -3,9 +3,39 @@ import { prisma } from "@/lib/prisma"
 import Link from "next/link"
 import { Claim, InsuranceCompany, User } from "@prisma/client"
 
+// Type for claims with included relations
 type ClaimWithRelations = Claim & {
-    insuranceCompany: InsuranceCompany
+    insuranceCompany: InsuranceCompany | null
     acceptedByContractor: Pick<User, 'name' | 'email'> | null
+}
+
+// Helper function to get relative time
+function getRelativeTime(date: Date): string {
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffSeconds = Math.floor(diffMs / 1000)
+    const diffMinutes = Math.floor(diffSeconds / 60)
+    const diffHours = Math.floor(diffMinutes / 60)
+    const diffDays = Math.floor(diffHours / 24)
+    const diffWeeks = Math.floor(diffDays / 7)
+    const diffMonths = Math.floor(diffDays / 30)
+    const diffYears = Math.floor(diffDays / 365)
+
+    if (diffYears > 0) {
+        return diffYears === 1 ? '1 year ago' : `${diffYears} years ago`
+    } else if (diffMonths > 0) {
+        return diffMonths === 1 ? '1 month ago' : `${diffMonths} months ago`
+    } else if (diffWeeks > 0) {
+        return diffWeeks === 1 ? '1 week ago' : `${diffWeeks} weeks ago`
+    } else if (diffDays > 0) {
+        return diffDays === 1 ? '1 day ago' : `${diffDays} days ago`
+    } else if (diffHours > 0) {
+        return diffHours === 1 ? '1 hour ago' : `${diffHours} hours ago`
+    } else if (diffMinutes > 0) {
+        return diffMinutes === 1 ? '1 minute ago' : `${diffMinutes} minutes ago`
+    } else {
+        return 'Just now'
+    }
 }
 
 export default async function ConsumerClaimsPage() {
@@ -13,7 +43,7 @@ export default async function ConsumerClaimsPage() {
     const user = await requireRole(["CONSUMER"])
 
     // Fetch only this consumer's claims
-    const claims: ClaimWithRelations[] = await prisma.claim.findMany({
+    const claims = await prisma.claim.findMany({
         where: { consumerId: user.id },
         include: {
             insuranceCompany: true,
@@ -165,7 +195,7 @@ export default async function ConsumerClaimsPage() {
                                         {claim.status === 'NEW' ? 'New' : 'Active'}
                                     </span>
                                     <span style={{ color: '#94A3B8', fontSize: '12px' }}>
-                                        {new Date(claim.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                        {getRelativeTime(new Date(claim.createdAt))}
                                     </span>
                                 </div>
 
