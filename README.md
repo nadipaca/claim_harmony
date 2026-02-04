@@ -300,6 +300,18 @@ This generates the TypeScript types from your schema.
 5. **Add claim event tracking** - Throughout the application for audit trails
 6. **Create role-based access control** - Based on User.role field
 
+## Registration API Endpoint
+Security Features:
+
+✅ Email format validation
+✅ Password length validation (minimum 8 characters)
+✅ Duplicate email checking
+✅ Secure password hashing with bcrypt (10 rounds)
+✅ Role validation (CONSUMER, CONTRACTOR, ADMIN)
+✅ Development-only logging
+
 ## License
 
 MIT
+
+
