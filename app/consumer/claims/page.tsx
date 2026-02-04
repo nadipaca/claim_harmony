@@ -1,41 +1,338 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../../lib/auth'
-import { redirect } from 'next/navigation'
+import { requireRole } from "@/lib/rbac"
+import { prisma } from "@/lib/prisma"
+import Link from "next/link"
+import { Claim, InsuranceCompany, User } from "@prisma/client"
+
+type ClaimWithRelations = Claim & {
+    insuranceCompany: InsuranceCompany
+    acceptedByContractor: Pick<User, 'name' | 'email'> | null
+}
 
 export default async function ConsumerClaimsPage() {
-    const session = await getServerSession(authOptions)
+    // RBAC: Require CONSUMER role
+    const user = await requireRole(["CONSUMER"])
 
-    if (!session) {
-        redirect('/login')
-    }
+    // Fetch only this consumer's claims
+    const claims: ClaimWithRelations[] = await prisma.claim.findMany({
+        where: { consumerId: user.id },
+        include: {
+            insuranceCompany: true,
+            acceptedByContractor: {
+                select: { name: true, email: true }
+            }
+        },
+        orderBy: { createdAt: "desc" }
+    })
+
+    // Get priority active claims (most recent 3)
+    const activeClaims = claims.slice(0, 3)
+    const userName = user.name || user.email?.split('@')[0] || 'User'
 
     return (
-        <div className="min-h-screen bg-gray-50 p-8">
-            <div className="max-w-7xl mx-auto">
-                <div className="bg-white rounded-lg shadow p-6">
-                    <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                        Consumer Dashboard
+        <div style={{ padding: '24px 32px' }}>
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+                <div>
+                    <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0F172A', marginBottom: '4px' }}>
+                        Dashboard
                     </h1>
-                    <p className="text-gray-600 mb-6">
-                        Welcome, {session.user.name || session.user.email}!
-                    </p>
-
-                    <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
-                        <p className="text-sm text-blue-800">
-                            <strong>Role:</strong> {session.user.role}
-                        </p>
-                        <p className="text-sm text-blue-800">
-                            <strong>Email:</strong> {session.user.email}
-                        </p>
-                    </div>
-
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4">
-                        My Claims
-                    </h2>
-                    <p className="text-gray-600">
-                        Your insurance claims will appear here.
+                    <p style={{ color: '#64748B', fontSize: '14px' }}>
+                        Welcome back, {userName}.
                     </p>
                 </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '10px 16px',
+                        background: 'white',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '8px'
+                    }}>
+                        <svg width="16" height="16" fill="none" stroke="#94A3B8" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input
+                            type="text"
+                            placeholder="Search address or Claim ID..."
+                            style={{
+                                border: 'none',
+                                outline: 'none',
+                                fontSize: '14px',
+                                color: '#0F172A',
+                                width: '200px'
+                            }}
+                        />
+                    </div>
+                    <Link
+                        href="/consumer/claims/new"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            background: '#1E3A8A',
+                            color: 'white',
+                            padding: '10px 20px',
+                            borderRadius: '8px',
+                            fontWeight: '600',
+                            fontSize: '14px',
+                            textDecoration: 'none'
+                        }}
+                    >
+                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        New Claim
+                    </Link>
+                </div>
+            </div>
+
+            {/* Priority Active Claims */}
+            <div style={{ marginBottom: '32px' }}>
+                <p style={{ color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase', marginBottom: '16px' }}>
+                    Priority Active Claims ({activeClaims.length})
+                </p>
+
+                {activeClaims.length === 0 ? (
+                    <div style={{
+                        background: 'white',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '12px',
+                        padding: '48px',
+                        textAlign: 'center'
+                    }}>
+                        <div style={{
+                            width: '64px',
+                            height: '64px',
+                            background: '#F1F5F9',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            margin: '0 auto 16px'
+                        }}>
+                            <svg width="32" height="32" fill="none" stroke="#94A3B8" strokeWidth="1.5" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <h3 style={{ color: '#0F172A', fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
+                            No active claims
+                        </h3>
+                        <p style={{ color: '#64748B', fontSize: '14px', marginBottom: '20px' }}>
+                            Create your first claim to get started.
+                        </p>
+                        <Link
+                            href="/consumer/claims/new"
+                            style={{
+                                display: 'inline-block',
+                                background: '#1E3A8A',
+                                color: 'white',
+                                padding: '10px 24px',
+                                borderRadius: '8px',
+                                fontWeight: '600',
+                                fontSize: '14px',
+                                textDecoration: 'none'
+                            }}
+                        >
+                            Create New Claim
+                        </Link>
+                    </div>
+                ) : (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                        {activeClaims.map((claim: ClaimWithRelations) => (
+                            <div
+                                key={claim.id}
+                                style={{
+                                    background: 'white',
+                                    border: '1px solid #E2E8F0',
+                                    borderRadius: '12px',
+                                    padding: '20px',
+                                    position: 'relative'
+                                }}
+                            >
+                                {/* Status Badge */}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                                    <span style={{
+                                        background: claim.status === 'NEW' ? '#FEF3C7' : '#D1FAE5',
+                                        color: claim.status === 'NEW' ? '#92400E' : '#065F46',
+                                        padding: '4px 10px',
+                                        borderRadius: '9999px',
+                                        fontSize: '11px',
+                                        fontWeight: '600',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        {claim.status === 'NEW' ? 'New' : 'Active'}
+                                    </span>
+                                    <span style={{ color: '#94A3B8', fontSize: '12px' }}>
+                                        {new Date(claim.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                    </span>
+                                </div>
+
+                                {/* Address */}
+                                <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F172A', marginBottom: '8px' }}>
+                                    {claim.address.split(',')[0]}
+                                </h3>
+                                <p style={{ color: '#64748B', fontSize: '13px', marginBottom: '16px', lineHeight: '1.5' }}>
+                                    {claim.description.length > 60 ? claim.description.substring(0, 60) + '...' : claim.description}
+                                </p>
+
+                                {/* Status Indicator */}
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    padding: '10px 14px',
+                                    borderRadius: '8px',
+                                    background: claim.acceptedByContractor ? '#D1FAE5' : (claim.status === 'NEW' ? '#FEF3C7' : '#EFF6FF'),
+                                    color: claim.acceptedByContractor ? '#065F46' : (claim.status === 'NEW' ? '#92400E' : '#1E40AF'),
+                                    fontSize: '13px',
+                                    fontWeight: '500'
+                                }}>
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        {claim.acceptedByContractor ? (
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        ) : (
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        )}
+                                    </svg>
+                                    {claim.acceptedByContractor
+                                        ? `Contractor Assigned`
+                                        : (claim.status === 'NEW' ? 'Action Required' : 'Pending Review')}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Claims History Table */}
+            <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#0F172A' }}>
+                        All Claims History
+                    </h2>
+                    <Link
+                        href="/consumer/claims"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            color: '#1E3A8A',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            textDecoration: 'none'
+                        }}
+                    >
+                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                        </svg>
+                        View All Records
+                    </Link>
+                </div>
+
+                {claims.length > 0 ? (
+                    <div style={{
+                        background: 'white',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '12px',
+                        overflow: 'hidden'
+                    }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <thead>
+                                <tr style={{ background: '#F8FAFC' }}>
+                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Date</th>
+                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Claim ID</th>
+                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Property</th>
+                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Type</th>
+                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Status</th>
+                                    <th style={{ padding: '14px 20px', textAlign: 'right', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {claims.map((claim: ClaimWithRelations) => (
+                                    <tr key={claim.id} style={{ borderTop: '1px solid #E2E8F0' }}>
+                                        <td style={{ padding: '16px 20px', color: '#0F172A', fontSize: '14px' }}>
+                                            {new Date(claim.createdAt).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric',
+                                                year: 'numeric'
+                                            })}
+                                        </td>
+                                        <td style={{ padding: '16px 20px', color: '#1E3A8A', fontSize: '14px', fontWeight: '500' }}>
+                                            {claim.claimNumber}
+                                        </td>
+                                        <td style={{ padding: '16px 20px', color: '#0F172A', fontSize: '14px' }}>
+                                            {claim.address.length > 30 ? claim.address.substring(0, 30) + '...' : claim.address}
+                                        </td>
+                                        <td style={{ padding: '16px 20px', color: '#64748B', fontSize: '14px' }}>
+                                            {claim.type}
+                                        </td>
+                                        <td style={{ padding: '16px 20px' }}>
+                                            <span style={{
+                                                background: claim.status === 'NEW' ? '#FEF3C7' : '#D1FAE5',
+                                                color: claim.status === 'NEW' ? '#92400E' : '#065F46',
+                                                padding: '4px 10px',
+                                                borderRadius: '9999px',
+                                                fontSize: '12px',
+                                                fontWeight: '500'
+                                            }}>
+                                                {claim.status}
+                                            </span>
+                                        </td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'right' }}>
+                                            <Link
+                                                href={`/consumer/claims/${claim.id}`}
+                                                style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '4px',
+                                                    color: '#1E3A8A',
+                                                    fontSize: '14px',
+                                                    fontWeight: '500',
+                                                    textDecoration: 'none'
+                                                }}
+                                            >
+                                                View
+                                                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {claims.length > 0 && (
+                            <div style={{
+                                padding: '12px 20px',
+                                borderTop: '1px solid #E2E8F0',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                color: '#64748B',
+                                fontSize: '13px'
+                            }}>
+                                <span>Showing 1-{Math.min(claims.length, 12)} of {claims.length}</span>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button style={{ padding: '6px 12px', border: '1px solid #E2E8F0', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Previous</button>
+                                    <button style={{ padding: '6px 12px', border: '1px solid #E2E8F0', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Next</button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div style={{
+                        background: 'white',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '12px',
+                        padding: '32px',
+                        textAlign: 'center',
+                        color: '#64748B'
+                    }}>
+                        No claims history yet.
+                    </div>
+                )}
             </div>
         </div>
     )
