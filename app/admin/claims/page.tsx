@@ -46,7 +46,7 @@ export default async function AdminClaimsPage() {
                     gap: '8px',
                     padding: '10px 16px',
                     background: 'white',
-                    border: '1px solid #bebfc1ff',
+                    border: '1px solid #a7a7a7ff',
                     borderRadius: '8px'
                 }}>
                     <svg width="16" height="16" fill="none" stroke="#94A3B8" strokeWidth="2" viewBox="0 0 24 24">
