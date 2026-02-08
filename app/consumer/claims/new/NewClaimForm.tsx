@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { createClaim } from './actions'
 import Link from 'next/link'
 
@@ -12,6 +12,14 @@ const CLAIM_TYPES = [
     { value: 'OTHER', label: 'Other' }
 ]
 
+interface UploadedFile {
+    filename: string
+    path: string
+    url: string
+    size: number
+    type: string
+}
+
 export default function NewClaimForm({
     insuranceCompanies
 }: {
@@ -20,6 +28,7 @@ export default function NewClaimForm({
     const [step, setStep] = useState(1)
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
+    const [uploadProgress, setUploadProgress] = useState<string | null>(null)
 
     // Form data
     const [address, setAddress] = useState('')
@@ -29,23 +38,97 @@ export default function NewClaimForm({
     const [description, setDescription] = useState('')
     const [isEmergency, setIsEmergency] = useState(false)
 
+    // File upload state
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+    const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
+    const fileInputRef = useRef<HTMLInputElement>(null)
+
     const selectedInsurer = insuranceCompanies.find(c => c.id === insuranceCompanyId)
+
+    async function uploadFiles(): Promise<UploadedFile[]> {
+        if (selectedFiles.length === 0) return []
+
+        setUploadProgress('Uploading files...')
+
+        const formData = new FormData()
+        selectedFiles.forEach(file => {
+            formData.append('files', file)
+        })
+
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+        })
+
+        const result = await response.json()
+
+        if (!response.ok) {
+            throw new Error(result.error || 'Failed to upload files')
+        }
+
+        setUploadProgress(null)
+        return result.files
+    }
 
     async function handleSubmit() {
         setError(null)
         setLoading(true)
 
-        const formData = new FormData()
-        formData.set('address', address)
-        formData.set('type', claimType)
-        formData.set('description', description)
-        formData.set('insuranceCompanyId', insuranceCompanyId)
+        try {
+            // Upload files first
+            const files = await uploadFiles()
+            setUploadedFiles(files)
 
-        const result = await createClaim(formData)
-        if (result?.error) {
-            setError(result.error)
+            const formData = new FormData()
+            formData.set('address', address)
+            formData.set('type', claimType)
+            formData.set('description', description)
+            formData.set('insuranceCompanyId', insuranceCompanyId)
+            formData.set('files', JSON.stringify(files))
+
+            const result = await createClaim(formData)
+            if (result?.error) {
+                setError(result.error)
+                setLoading(false)
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred')
             setLoading(false)
         }
+    }
+
+    function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+        const files = e.target.files
+        if (!files) return
+
+        const newFiles = Array.from(files)
+        const maxSize = 16 * 1024 * 1024 // 16MB
+
+        // Validate file sizes
+        for (const file of newFiles) {
+            if (file.size > maxSize) {
+                setError(`File "${file.name}" exceeds 16MB limit`)
+                return
+            }
+        }
+
+        setSelectedFiles(prev => [...prev, ...newFiles])
+        setError(null)
+
+        // Reset input
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''
+        }
+    }
+
+    function removeFile(index: number) {
+        setSelectedFiles(prev => prev.filter((_, i) => i !== index))
+    }
+
+    function formatFileSize(bytes: number): string {
+        if (bytes < 1024) return bytes + ' B'
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
     }
 
     function canProceedStep1() {
@@ -521,22 +604,179 @@ export default function NewClaimForm({
                         </div>
 
                         {/* File Upload Area */}
-                        <div style={{
-                            border: '2px dashed #E2E8F0',
-                            borderRadius: '8px',
-                            padding: '32px',
-                            textAlign: 'center',
-                            marginBottom: '32px'
-                        }}>
-                            <svg width="32" height="32" fill="none" stroke="#94A3B8" strokeWidth="1.5" viewBox="0 0 24 24" style={{ margin: '0 auto 12px' }}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                            <p style={{ color: '#0F172A', fontSize: '14px', fontWeight: '500', margin: '0 0 4px' }}>
-                                Add Initial Photos or Policy Docs
-                            </p>
-                            <p style={{ color: '#94A3B8', fontSize: '12px', margin: 0 }}>
-                                (Optional - max 16 MB)
-                            </p>
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={{
+                                display: 'block',
+                                color: '#64748B',
+                                fontSize: '11px',
+                                fontWeight: '600',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                marginBottom: '12px'
+                            }}>
+                                Upload Documents (Optional)
+                            </label>
+
+                            {/* Hidden File Input */}
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileSelect}
+                                multiple
+                                accept="image/*,.pdf,.doc,.docx"
+                                style={{ display: 'none' }}
+                            />
+
+                            {/* Dropzone Area */}
+                            <div
+                                onClick={() => fileInputRef.current?.click()}
+                                style={{
+                                    border: '2px dashed #E2E8F0',
+                                    borderRadius: '8px',
+                                    padding: '24px',
+                                    textAlign: 'center',
+                                    cursor: 'pointer',
+                                    transition: 'border-color 0.2s, background 0.2s'
+                                }}
+                                onMouseOver={(e) => {
+                                    e.currentTarget.style.borderColor = '#1E3A8A'
+                                    e.currentTarget.style.background = '#F8FAFC'
+                                }}
+                                onMouseOut={(e) => {
+                                    e.currentTarget.style.borderColor = '#E2E8F0'
+                                    e.currentTarget.style.background = 'transparent'
+                                }}
+                            >
+                                <svg width="32" height="32" fill="none" stroke="#94A3B8" strokeWidth="1.5" viewBox="0 0 24 24" style={{ margin: '0 auto 12px' }}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                <p style={{ color: '#0F172A', fontSize: '14px', fontWeight: '500', margin: '0 0 4px' }}>
+                                    Click to add photos or documents
+                                </p>
+                                <p style={{ color: '#94A3B8', fontSize: '12px', margin: 0 }}>
+                                    Images, PDF, Word docs • Max 16 MB each
+                                </p>
+                            </div>
+
+                            {/* Selected Files List */}
+                            {selectedFiles.length > 0 && (
+                                <div style={{ marginTop: '16px' }}>
+                                    {selectedFiles.map((file, index) => (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                padding: '12px',
+                                                background: '#F8FAFC',
+                                                borderRadius: '8px',
+                                                marginBottom: '8px'
+                                            }}
+                                        >
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
+                                                {/* File Icon or Thumbnail */}
+                                                {file.type.startsWith('image/') ? (
+                                                    <div style={{
+                                                        width: '40px',
+                                                        height: '40px',
+                                                        borderRadius: '6px',
+                                                        overflow: 'hidden',
+                                                        flexShrink: 0
+                                                    }}>
+                                                        <img
+                                                            src={URL.createObjectURL(file)}
+                                                            alt={file.name}
+                                                            style={{
+                                                                width: '100%',
+                                                                height: '100%',
+                                                                objectFit: 'cover'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div style={{
+                                                        width: '40px',
+                                                        height: '40px',
+                                                        borderRadius: '6px',
+                                                        background: '#E2E8F0',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        flexShrink: 0
+                                                    }}>
+                                                        <svg width="20" height="20" fill="none" stroke="#64748B" strokeWidth="2" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                    </div>
+                                                )}
+                                                <div style={{ minWidth: 0, flex: 1 }}>
+                                                    <p style={{
+                                                        color: '#0F172A',
+                                                        fontSize: '13px',
+                                                        fontWeight: '500',
+                                                        margin: 0,
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        whiteSpace: 'nowrap'
+                                                    }}>
+                                                        {file.name}
+                                                    </p>
+                                                    <p style={{ color: '#94A3B8', fontSize: '12px', margin: 0 }}>
+                                                        {formatFileSize(file.size)}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeFile(index)}
+                                                style={{
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    padding: '6px',
+                                                    borderRadius: '4px',
+                                                    color: '#94A3B8',
+                                                    flexShrink: 0
+                                                }}
+                                            >
+                                                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Upload Progress */}
+                            {uploadProgress && (
+                                <div style={{
+                                    marginTop: '12px',
+                                    padding: '12px',
+                                    background: '#EFF6FF',
+                                    borderRadius: '8px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}>
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="#1E3A8A"
+                                        strokeWidth="2"
+                                        style={{ animation: 'spin 1s linear infinite' }}
+                                    >
+                                        <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+                                        <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
+                                    </svg>
+                                    <span style={{ color: '#1E3A8A', fontSize: '13px', fontWeight: '500' }}>
+                                        {uploadProgress}
+                                    </span>
+                                </div>
+                            )}
                         </div>
 
                         {/* Actions */}

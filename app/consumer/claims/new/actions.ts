@@ -5,6 +5,14 @@ import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { ClaimType, ClaimEventType, Role } from "@prisma/client"
 
+interface UploadedFile {
+    filename: string
+    path: string
+    url: string
+    size: number
+    type: string
+}
+
 export async function createClaim(formData: FormData) {
     // RBAC: Require CONSUMER role
     const user = await requireRole([Role.CONSUMER])
@@ -14,6 +22,17 @@ export async function createClaim(formData: FormData) {
     const type = formData.get('type') as ClaimType
     const description = formData.get('description') as string
     const insuranceCompanyId = formData.get('insuranceCompanyId') as string
+    const filesJson = formData.get('files') as string
+
+    // Parse uploaded files
+    let uploadedFiles: UploadedFile[] = []
+    if (filesJson) {
+        try {
+            uploadedFiles = JSON.parse(filesJson)
+        } catch {
+            // Ignore parse errors, treat as no files
+        }
+    }
 
     // Validation
     const errors: string[] = []
@@ -64,6 +83,33 @@ export async function createClaim(formData: FormData) {
                 meta: { createdFrom: 'consumer_new_claim' }
             }
         })
+
+        // Create ClaimDocument records for uploaded files
+        if (uploadedFiles.length > 0) {
+            await tx.claimDocument.createMany({
+                data: uploadedFiles.map(file => ({
+                    claimId: newClaim.id,
+                    filename: file.filename,
+                    docType: file.type.startsWith('image/') ? 'photo' : 'document',
+                    storageUrl: file.url,
+                    uploadedByUserId: user.id
+                }))
+            })
+
+            // Create document upload event
+            await tx.claimEvent.create({
+                data: {
+                    claimId: newClaim.id,
+                    eventType: ClaimEventType.DOCUMENT_UPLOADED,
+                    actorRole: Role.CONSUMER,
+                    actorUserId: user.id,
+                    meta: {
+                        documentCount: uploadedFiles.length,
+                        filenames: uploadedFiles.map(f => f.filename)
+                    }
+                }
+            })
+        }
 
         return newClaim
     })

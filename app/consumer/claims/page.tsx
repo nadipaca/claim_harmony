@@ -175,26 +175,40 @@ export default async function ConsumerClaimsPage() {
                                 key={claim.id}
                                 style={{
                                     background: 'white',
-                                    border: '1px solid #E2E8F0',
+                                    border: '1px solid #cbcbcbff',
                                     borderRadius: '12px',
                                     padding: '20px',
-                                    position: 'relative'
+                                    position: 'relative',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    height: '100%'
                                 }}
                             >
-                                {/* Status Badge */}
+                                {/* Claim Type Badge */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                                     <span style={{
-                                        background: claim.status === 'NEW' ? '#FEF3C7' : '#D1FAE5',
-                                        color: claim.status === 'NEW' ? '#92400E' : '#065F46',
+                                        background: claim.type === 'ROOF' ? '#FEF3C7' :
+                                            claim.type === 'WATER' ? '#DBEAFE' :
+                                                claim.type === 'FIRE' ? '#FEE2E2' :
+                                                    claim.type === 'MOLD' ? '#D1FAE5' : '#F1F5F9',
+                                        color: claim.type === 'ROOF' ? '#92400E' :
+                                            claim.type === 'WATER' ? '#1E40AF' :
+                                                claim.type === 'FIRE' ? '#991B1B' :
+                                                    claim.type === 'MOLD' ? '#065F46' : '#475569',
                                         padding: '4px 10px',
                                         borderRadius: '9999px',
                                         fontSize: '11px',
                                         fontWeight: '600',
                                         textTransform: 'uppercase'
                                     }}>
-                                        {claim.status === 'NEW' ? 'New' : 'Active'}
+                                        {claim.type}
                                     </span>
-                                    <span style={{ color: '#94A3B8', fontSize: '12px' }}>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#94A3B8', fontSize: '12px' }}>
+                                        <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
+                                        </svg>
                                         {getRelativeTime(new Date(claim.createdAt))}
                                     </span>
                                 </div>
@@ -203,9 +217,24 @@ export default async function ConsumerClaimsPage() {
                                 <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F172A', marginBottom: '8px' }}>
                                     {claim.address.split(',')[0]}
                                 </h3>
-                                <p style={{ color: '#64748B', fontSize: '13px', marginBottom: '16px', lineHeight: '1.5' }}>
-                                    {claim.description.length > 60 ? claim.description.substring(0, 60) + '...' : claim.description}
+
+                                {/* Description with fixed height for alignment */}
+                                <p style={{
+                                    color: '#64748B',
+                                    fontSize: '13px',
+                                    lineHeight: '1.5',
+                                    height: '40px',
+                                    overflow: 'hidden',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                    marginBottom: '16px'
+                                }}>
+                                    {claim.description}
                                 </p>
+
+                                {/* Spacer to push status to bottom */}
+                                <div style={{ flex: 1, minHeight: '8px' }} />
 
                                 {/* Status Indicator */}
                                 <div style={{
@@ -215,17 +244,25 @@ export default async function ConsumerClaimsPage() {
                                     padding: '10px 14px',
                                     borderRadius: '8px',
                                     background: claim.acceptedByContractor ? '#D1FAE5' : (claim.status === 'NEW' ? '#FEF3C7' : '#EFF6FF'),
-                                    color: claim.acceptedByContractor ? '#065F46' : (claim.status === 'NEW' ? '#92400E' : '#1E40AF'),
+                                    color: claim.acceptedByContractor ? '#065F46' : (claim.status === 'NEW' ? '#DC2626' : '#1E40AF'),
                                     fontSize: '13px',
                                     fontWeight: '500'
                                 }}>
-                                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        {claim.acceptedByContractor ? (
+                                    {claim.acceptedByContractor ? (
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                        ) : (
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        )}
-                                    </svg>
+                                        </svg>
+                                    ) : claim.status === 'NEW' ? (
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" y1="8" x2="12" y2="12" strokeLinecap="round" />
+                                            <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none" />
+                                        </svg>
+                                    ) : (
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    )}
                                     {claim.acceptedByContractor
                                         ? `Contractor Assigned`
                                         : (claim.status === 'NEW' ? 'Action Required' : 'Pending Review')}
