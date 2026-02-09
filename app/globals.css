@@ -171,12 +171,18 @@ body {
 @media (max-width: 768px) {
   .chClaimListItem {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
     gap: 16px;
   }
 
   .chClaimListItem > a {
     width: 100%;
+    text-align: center;
+  }
+
+  .chClaimListItem h3,
+  .chClaimListItem p {
     text-align: center;
   }
 }
