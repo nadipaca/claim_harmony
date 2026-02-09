@@ -30,7 +30,7 @@ export default async function ContractorLayout({
             badgeColor="#1E3A8A"
             roleColor="#D4AF37"
             navItems={[
-                { href: "/contractor/claims", label: "Dashboard", icon: "dashboard" },
+                // { href: "/contractor/claims", label: "Dashboard", icon: "dashboard" },
                 { href: "/contractor/claims", label: "Job Board", icon: "jobBoard" },
             ]}
         >

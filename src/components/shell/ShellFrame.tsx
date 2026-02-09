@@ -3,6 +3,7 @@
 import type { ReactNode } from "react"
 import { useCallback, useSyncExternalStore } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { ClaimsIcon, DashboardIcon, JobBoardIcon, UsersIcon } from "./icons"
 
 export type ShellIconKey = "dashboard" | "claims" | "users" | "jobBoard"
@@ -56,40 +57,36 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
                     overflow: "hidden",
                 }}
             >
-                <div style={{ padding: "16px 12px", display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ padding: "16px 12px", display: "flex", alignItems: "center", gap: "8px" }}>
                     <div
                         style={{
-                            width: "28px",
-                            height: "28px",
-                            borderRadius: "6px",
-                            background: "#D4AF37",
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "8px",
+                            background: "rgba(212, 175, 55, 0.12)",
+                            border: "1px solid rgba(212, 175, 55, 0.25)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             flexShrink: 0,
                         }}
                     >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                            />
-                        </svg>
+                        <Image src="/logo.svg" alt="ClaimHarmony" width={22} height={22} />
                     </div>
                     <span
                         className="chShell__brand"
                         style={{
                             fontSize: "16px",
-                            fontWeight: "bold",
+                            fontWeight: "700",
                             color: "white",
+                            // letterSpacing: "-0.02em",
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             opacity: collapsed ? 0 : 1,
                             transition: "opacity 120ms ease",
                         }}
                     >
-                        ClaimHarmony
+                        Claim<span style={{ color: "#D4AF37" }}>Harmony</span>
                     </span>
 
                     <button
