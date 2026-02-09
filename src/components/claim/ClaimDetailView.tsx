@@ -13,7 +13,7 @@ interface ClaimDetailViewProps {
 
 export function ClaimDetailView({ claim, backHref, headerRight, pageBackground = "#F8FAFC" }: ClaimDetailViewProps) {
     return (
-        <div className="chClaimDetailPage" style={{ padding: "24px 32px", background: pageBackground, boxSizing: "border-box" }}>
+        <div className="chClaimDetailPage" style={{ background: pageBackground, boxSizing: "border-box" }}>
             <div
                 style={{
                     display: "flex",
@@ -345,40 +345,6 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                     <ClaimDocuments claimId={claim.id} claimNumber={claim.claimNumber} documents={claim.documents} />
                 </div>
             </div>
-
-            <style jsx>{`
-                .chClaimDetailGrid {
-                    display: grid;
-                    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
-                    gap: 24px;
-                    align-items: start;
-                }
-                .chClaimPartyCards {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 16px;
-                    align-items: stretch;
-                }
-                .chClaimPartyCard {
-                    flex: 1 1 240px;
-                    min-width: 220px;
-                    height: 120px;
-                    overflow: hidden;
-                }
-                @media (max-width: 1024px) {
-                    .chClaimDetailGrid {
-                        grid-template-columns: 1fr;
-                    }
-                }
-                @media (max-width: 520px) {
-                    .chClaimDetailPage {
-                        padding: 16px;
-                    }
-                    .chClaimPartyCard {
-                        min-width: 100%;
-                    }
-                }
-            `}</style>
         </div>
     )
 }

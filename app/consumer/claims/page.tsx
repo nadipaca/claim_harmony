@@ -309,7 +309,7 @@ export default async function ConsumerClaimsPage() {
                     }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
-                                <tr style={{ background: '#F8FAFC' }}>
+                                <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #787878ff' }}>
                                     <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Date</th>
                                     <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Claim ID</th>
                                     <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Property</th>
@@ -320,7 +320,7 @@ export default async function ConsumerClaimsPage() {
                             </thead>
                             <tbody>
                                 {claims.map((claim: ClaimWithRelations) => (
-                                    <tr key={claim.id} style={{ borderTop: '1px solid #787878ff' }}>
+                                    <tr key={claim.id}>
                                         <td style={{ padding: '16px 20px', color: '#0F172A', fontSize: '14px' }}>
                                             {new Date(claim.createdAt).toLocaleDateString('en-US', {
                                                 month: 'short',
@@ -375,7 +375,6 @@ export default async function ConsumerClaimsPage() {
                         {claims.length > 0 && (
                             <div style={{
                                 padding: '12px 20px',
-                                borderTop: '1px solid #787878ff',
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
@@ -393,7 +392,7 @@ export default async function ConsumerClaimsPage() {
                 ) : (
                     <div style={{
                         background: 'white',
-                        border: '1px solid #787878ff',
+                        border: '1px solid #bebfc1ff',
                         borderRadius: '12px',
                         padding: '32px',
                         textAlign: 'center',

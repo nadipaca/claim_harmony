@@ -146,7 +146,7 @@ export default async function AdminClaimsPage() {
                 }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <thead>
-                            <tr style={{ background: '#F8FAFC' }}>
+                            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #787878ff' }}>
                                 <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Claim #</th>
                                 <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Status</th>
                                 <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Insurer</th>
@@ -158,7 +158,7 @@ export default async function AdminClaimsPage() {
                         </thead>
                         <tbody>
                             {claims.map((claim: ClaimWithRelations) => (
-                                <tr key={claim.id} style={{ borderTop: '1px solid #787878ff' }}>
+                                <tr key={claim.id}>
                                     <td style={{ padding: '16px 20px', color: '#1E3A8A', fontSize: '14px', fontWeight: '500' }}>
                                         {claim.claimNumber}
                                     </td>
@@ -218,7 +218,6 @@ export default async function AdminClaimsPage() {
                     {claims.length > 0 && (
                         <div style={{
                             padding: '12px 20px',
-                            borderTop: '1px solid #787878ff',
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',

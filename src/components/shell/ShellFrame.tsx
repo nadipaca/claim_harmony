@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useEffect, useState } from "react"
+import { useCallback, useSyncExternalStore } from "react"
 import Link from "next/link"
 import { ClaimsIcon, DashboardIcon, JobBoardIcon, UsersIcon } from "./icons"
 
@@ -38,7 +38,7 @@ function Icon({ icon }: { icon: ShellIconKey }) {
 const STORAGE_KEY = "claimHarmony.sidebarCollapsed"
 
 export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor, roleColor }: ShellFrameProps) {
-    const [collapsed, setCollapsed] = useStateFromStorage(STORAGE_KEY, false)
+    const [collapsed, setCollapsed] = useLocalStorageBoolean(STORAGE_KEY, false)
 
     return (
         <div
@@ -95,7 +95,7 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
                     <button
                         type="button"
                         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-                        onClick={() => setCollapsed(!collapsed)}
+                        onClick={() => setCollapsed((prev) => !prev)}
                         style={{
                             marginLeft: "auto",
                             width: "32px",
@@ -222,8 +222,10 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
     )
 }
 
-function useStateFromStorage(key: string, defaultValue: boolean) {
-    const [value, setValue] = useState(() => {
+const LOCAL_STORAGE_EVENT = "claimHarmony:localStorage"
+
+function useLocalStorageBoolean(key: string, defaultValue: boolean) {
+    const getSnapshot = useCallback(() => {
         try {
             const raw = window.localStorage.getItem(key)
             if (raw === null) return defaultValue
@@ -231,15 +233,35 @@ function useStateFromStorage(key: string, defaultValue: boolean) {
         } catch {
             return defaultValue
         }
-    })
+    }, [key, defaultValue])
 
-    useEffect(() => {
-        try {
-            window.localStorage.setItem(key, String(value))
-        } catch {
-            // ignore
+    const getServerSnapshot = useCallback(() => defaultValue, [defaultValue])
+
+    const subscribe = useCallback((onStoreChange: () => void) => {
+        const handler = () => onStoreChange()
+        window.addEventListener("storage", handler)
+        window.addEventListener(LOCAL_STORAGE_EVENT, handler)
+        return () => {
+            window.removeEventListener("storage", handler)
+            window.removeEventListener(LOCAL_STORAGE_EVENT, handler)
         }
-    }, [key, value])
+    }, [])
+
+    const value = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+
+    const setValue = useCallback(
+        (next: boolean | ((prev: boolean) => boolean)) => {
+            const prev = getSnapshot()
+            const nextValue = typeof next === "function" ? next(prev) : next
+            try {
+                window.localStorage.setItem(key, String(nextValue))
+            } catch {
+                // ignore
+            }
+            window.dispatchEvent(new Event(LOCAL_STORAGE_EVENT))
+        },
+        [getSnapshot, key]
+    )
 
     return [value, setValue] as const
 }
