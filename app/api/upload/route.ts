@@ -3,11 +3,17 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Lazy initialization to avoid build-time errors
+function getSupabaseAdmin() {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-// Server-side Supabase client for uploads
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+    if (!supabaseUrl || !supabaseServiceKey) {
+        throw new Error('Supabase environment variables are not configured')
+    }
+
+    return createClient(supabaseUrl, supabaseServiceKey)
+}
 
 const MAX_FILE_SIZE = 16 * 1024 * 1024 // 16MB
 const ALLOWED_TYPES = [
@@ -23,6 +29,9 @@ export async function POST(request: NextRequest) {
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
+
+        // Get Supabase client at runtime
+        const supabaseAdmin = getSupabaseAdmin()
 
         const formData = await request.formData()
         const files = formData.getAll('files') as File[]
