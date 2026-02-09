@@ -126,7 +126,7 @@ export default async function ContractorClaimsPage({
             </p>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: '24px', borderBottom: '1px solid #E2E8F0', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', gap: '24px', borderBottom: '1px solid #787878ff', marginBottom: '24px' }}>
                 <Link
                     href="/contractor/claims?tab=available"
                     style={{
@@ -161,7 +161,7 @@ export default async function ContractorClaimsPage({
             {claims.length === 0 ? (
                 <div style={{
                     background: 'white',
-                    border: '1px solid #E2E8F0',
+                    border: '1px solid #787878ff',
                     borderRadius: '12px',
                     padding: '48px',
                     textAlign: 'center'
@@ -265,7 +265,7 @@ export default async function ContractorClaimsPage({
 
                                 {/* Action Button */}
                                 <Link
-                                    href={`/contractor/claims/${claim.id}`}
+                                    href={`/contractor/claims/${claim.claimNumber.replace('CLM-', '')}`}
                                     style={{
                                         background: '#1E3A8A',
                                         color: 'white',
@@ -287,3 +287,4 @@ export default async function ContractorClaimsPage({
         </div>
     )
 }
+

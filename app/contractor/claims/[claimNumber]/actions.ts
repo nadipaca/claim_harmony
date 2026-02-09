@@ -18,7 +18,8 @@ export async function acceptClaim(claimId: string): Promise<{ success?: boolean;
                 select: {
                     id: true,
                     status: true,
-                    acceptedByContractorId: true
+                    acceptedByContractorId: true,
+                    claimNumber: true
                 }
             })
 
@@ -57,11 +58,10 @@ export async function acceptClaim(claimId: string): Promise<{ success?: boolean;
                 }
             })
 
-            return { success: true }
+            return { success: true, claimNumber: claim.claimNumber }
         })
 
         // Revalidate paths to reflect updates
-        revalidatePath(`/contractor/claims/${claimId}`)
         revalidatePath('/contractor/claims')
 
         return result

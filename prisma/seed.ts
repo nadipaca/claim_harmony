@@ -78,7 +78,7 @@ async function main() {
     // Create Claims
     const newClaim = await prisma.claim.create({
         data: {
-            claimNumber: 'CH-000001',
+            claimNumber: 'CLM-000001',
             address: '123 Main St, Miami, FL 33101',
             type: ClaimType.ROOF,
             description: 'Roof damage from recent hurricane. Multiple shingles missing and water intrusion detected.',
@@ -90,7 +90,7 @@ async function main() {
 
     const acceptedClaim = await prisma.claim.create({
         data: {
-            claimNumber: 'CH-000002',
+            claimNumber: 'CLM-000002',
             address: '456 Oak Ave, Tampa, FL 33602',
             type: ClaimType.WATER,
             description: 'Water damage in kitchen from pipe burst. Flooring and cabinets affected.',

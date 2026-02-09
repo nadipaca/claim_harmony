@@ -7,16 +7,19 @@ import { Role, ClaimEventType } from '@prisma/client'
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ claimNumber: string }> }
 ) {
     try {
         // Authenticate user
         const user = await requireAuth()
-        const { id: claimId } = await params
+        const { claimNumber } = await params
+
+        // Construct the full claim number (add CLM- prefix if not present)
+        const fullClaimNumber = claimNumber.startsWith('CLM-') ? claimNumber : `CLM-${claimNumber}`
 
         // Fetch claim
-        const claim = await prisma.claim.findUnique({
-            where: { id: claimId },
+        const claim = await prisma.claim.findFirst({
+            where: { claimNumber: fullClaimNumber },
             select: {
                 id: true,
                 consumerId: true,
@@ -63,7 +66,7 @@ export async function POST(
         // Generate unique filename to avoid collisions
         const timestamp = Date.now()
         const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
-        const storagePath = `claims/${claimId}/${timestamp}_${sanitizedFilename}`
+        const storagePath = `claims/${claim.id}/${timestamp}_${sanitizedFilename}`
 
         // Convert File to ArrayBuffer for upload
         const arrayBuffer = await file.arrayBuffer()
@@ -97,7 +100,7 @@ export async function POST(
         // Create document record with storage URL
         const document = await prisma.claimDocument.create({
             data: {
-                claimId: claimId,
+                claimId: claim.id,
                 filename: file.name,
                 docType: docType || null,
                 uploadedByUserId: user.id,
@@ -108,7 +111,7 @@ export async function POST(
         // Create timeline event
         await prisma.claimEvent.create({
             data: {
-                claimId: claimId,
+                claimId: claim.id,
                 eventType: ClaimEventType.DOCUMENT_UPLOADED,
                 actorRole: user.role as Role,
                 actorUserId: user.id,

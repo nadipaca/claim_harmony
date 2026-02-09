@@ -17,3 +17,4 @@ export default async function NewClaimPage() {
 
     return <NewClaimForm insuranceCompanies={insuranceCompanies} />
 }
+

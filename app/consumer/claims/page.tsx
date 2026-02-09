@@ -77,7 +77,7 @@ export default async function ConsumerClaimsPage() {
                         gap: '8px',
                         padding: '10px 16px',
                         background: 'white',
-                        border: '1px solid #E2E8F0',
+                        border: '1px solid #787878ff',
                         borderRadius: '8px'
                     }}>
                         <svg width="16" height="16" fill="none" stroke="#94A3B8" strokeWidth="2" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@ export default async function ConsumerClaimsPage() {
                 {activeClaims.length === 0 ? (
                     <div style={{
                         background: 'white',
-                        border: '1px solid #E2E8F0',
+                        border: '1px solid #787878ff',
                         borderRadius: '12px',
                         padding: '48px',
                         textAlign: 'center'
@@ -301,7 +301,7 @@ export default async function ConsumerClaimsPage() {
                 {claims.length > 0 ? (
                     <div style={{
                         background: 'white',
-                        border: '1px solid #E2E8F0',
+                        border: '1px solid #787878ff',
                         borderRadius: '12px',
                         overflow: 'hidden'
                     }}>
@@ -318,7 +318,7 @@ export default async function ConsumerClaimsPage() {
                             </thead>
                             <tbody>
                                 {claims.map((claim: ClaimWithRelations) => (
-                                    <tr key={claim.id} style={{ borderTop: '1px solid #E2E8F0' }}>
+                                    <tr key={claim.id} style={{ borderTop: '1px solid #787878ff' }}>
                                         <td style={{ padding: '16px 20px', color: '#0F172A', fontSize: '14px' }}>
                                             {new Date(claim.createdAt).toLocaleDateString('en-US', {
                                                 month: 'short',
@@ -349,7 +349,7 @@ export default async function ConsumerClaimsPage() {
                                         </td>
                                         <td style={{ padding: '16px 20px', textAlign: 'right' }}>
                                             <Link
-                                                href={`/consumer/claims/${claim.id}`}
+                                                href={`/consumer/claims/${claim.claimNumber.replace('CLM-', '')}`}
                                                 style={{
                                                     display: 'inline-flex',
                                                     alignItems: 'center',
@@ -373,7 +373,7 @@ export default async function ConsumerClaimsPage() {
                         {claims.length > 0 && (
                             <div style={{
                                 padding: '12px 20px',
-                                borderTop: '1px solid #E2E8F0',
+                                borderTop: '1px solid #787878ff',
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
@@ -382,8 +382,8 @@ export default async function ConsumerClaimsPage() {
                             }}>
                                 <span>Showing 1-{Math.min(claims.length, 12)} of {claims.length}</span>
                                 <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button style={{ padding: '6px 12px', border: '1px solid #E2E8F0', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Previous</button>
-                                    <button style={{ padding: '6px 12px', border: '1px solid #E2E8F0', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Next</button>
+                                    <button style={{ padding: '6px 12px', border: '1px solid #787878ff', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Previous</button>
+                                    <button style={{ padding: '6px 12px', border: '1px solid #787878ff', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Next</button>
                                 </div>
                             </div>
                         )}
@@ -391,7 +391,7 @@ export default async function ConsumerClaimsPage() {
                 ) : (
                     <div style={{
                         background: 'white',
-                        border: '1px solid #E2E8F0',
+                        border: '1px solid #787878ff',
                         borderRadius: '12px',
                         padding: '32px',
                         textAlign: 'center',
@@ -404,3 +404,4 @@ export default async function ConsumerClaimsPage() {
         </div>
     )
 }
+

@@ -7,20 +7,23 @@ import { supabaseAdmin } from '@/lib/supabase'
 // GET - View or Download document
 export async function GET(
     request: NextRequest,
-    { params }: { params: Promise<{ id: string; documentId: string }> }
+    { params }: { params: Promise<{ claimNumber: string; documentId: string }> }
 ) {
     try {
         // Authenticate user
         const user = await requireAuth()
-        const { id: claimId, documentId } = await params
+        const { claimNumber, documentId } = await params
+
+        // Construct the full claim number (add CLM- prefix if not present)
+        const fullClaimNumber = claimNumber.startsWith('CLM-') ? claimNumber : `CLM-${claimNumber}`
 
         // Check if this is a download request
         const url = new URL(request.url)
         const isDownload = url.searchParams.get('download') === 'true'
 
         // Fetch claim
-        const claim = await prisma.claim.findUnique({
-            where: { id: claimId },
+        const claim = await prisma.claim.findFirst({
+            where: { claimNumber: fullClaimNumber },
             select: {
                 id: true,
                 consumerId: true,
@@ -49,7 +52,7 @@ export async function GET(
             where: { id: documentId }
         })
 
-        if (!document || document.claimId !== claimId) {
+        if (!document || document.claimId !== claim.id) {
             return NextResponse.json(
                 { error: 'Document not found' },
                 { status: 404 }

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { requireRole } from '../../lib/rbac'
+import { requireRole } from '@/lib/rbac'
 import { Role } from '@prisma/client'
 
 export async function GET() {
@@ -26,3 +26,4 @@ export async function GET() {
         )
     }
 }
+

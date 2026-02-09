@@ -53,10 +53,10 @@ export async function createClaim(formData: FormData) {
         return { error: errors.join('. ') }
     }
 
-    // Generate claim number: CH-000001 format
+    // Generate claim number: CLM-000001 format
     // Note: For production, use a database sequence for guaranteed uniqueness
     const claimCount = await prisma.claim.count()
-    const claimNumber = `CH-${String(claimCount + 1).padStart(6, '0')}`
+    const claimNumber = `CLM-${String(claimCount + 1).padStart(6, '0')}`
 
     // Create claim and event in a transaction
     const claim = await prisma.$transaction(async (tx) => {
@@ -114,6 +114,7 @@ export async function createClaim(formData: FormData) {
         return newClaim
     })
 
-    // Redirect to claim detail page
-    redirect(`/consumer/claims/${claim.id}`)
+    // Redirect to claim detail page using claim number without CLM- prefix
+    redirect(`/consumer/claims/${claim.claimNumber.replace('CLM-', '')}`)
 }
+

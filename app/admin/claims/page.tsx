@@ -156,7 +156,7 @@ export default async function AdminClaimsPage() {
                         </thead>
                         <tbody>
                             {claims.map((claim: ClaimWithRelations) => (
-                                <tr key={claim.id} style={{ borderTop: '1px solid #E2E8F0' }}>
+                                <tr key={claim.id} style={{ borderTop: '1px solid #787878ff' }}>
                                     <td style={{ padding: '16px 20px', color: '#1E3A8A', fontSize: '14px', fontWeight: '500' }}>
                                         {claim.claimNumber}
                                     </td>
@@ -192,7 +192,7 @@ export default async function AdminClaimsPage() {
                                     </td>
                                     <td style={{ padding: '16px 20px', textAlign: 'right' }}>
                                         <Link
-                                            href={`/admin/claims/${claim.id}`}
+                                            href={`/admin/claims/${claim.claimNumber.replace('CLM-', '')}`}
                                             style={{
                                                 display: 'inline-flex',
                                                 alignItems: 'center',
@@ -216,7 +216,7 @@ export default async function AdminClaimsPage() {
                     {claims.length > 0 && (
                         <div style={{
                             padding: '12px 20px',
-                            borderTop: '1px solid #E2E8F0',
+                            borderTop: '1px solid #787878ff',
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
@@ -225,8 +225,8 @@ export default async function AdminClaimsPage() {
                         }}>
                             <span>Showing 1-{claims.length} of {claims.length}</span>
                             <div style={{ display: 'flex', gap: '8px' }}>
-                                <button style={{ padding: '6px 12px', border: '1px solid #E2E8F0', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Previous</button>
-                                <button style={{ padding: '6px 12px', border: '1px solid #E2E8F0', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Next</button>
+                                <button style={{ padding: '6px 12px', border: '1px solid #787878ff', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Previous</button>
+                                <button style={{ padding: '6px 12px', border: '1px solid #787878ff', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Next</button>
                             </div>
                         </div>
                     )}
@@ -235,3 +235,4 @@ export default async function AdminClaimsPage() {
         </div>
     )
 }
+

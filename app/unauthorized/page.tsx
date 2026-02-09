@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../lib/auth'
+import { authOptions } from '@/lib/auth'
 
 export default async function UnauthorizedPage() {
     const session = await getServerSession(authOptions)
@@ -26,7 +26,7 @@ export default async function UnauthorizedPage() {
                         Access Denied
                     </h1>
                     <p className="text-gray-600">
-                        You don't have permission to access this page.
+                        You don&apos;t have permission to access this page.
                     </p>
                 </div>
 
@@ -77,3 +77,4 @@ export default async function UnauthorizedPage() {
         </div>
     )
 }
+

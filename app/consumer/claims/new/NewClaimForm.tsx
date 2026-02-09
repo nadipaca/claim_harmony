@@ -159,7 +159,7 @@ export default function NewClaimForm({
                         width: '32px',
                         height: '32px',
                         borderRadius: '50%',
-                        background: step >= 1 ? '#1E3A8A' : '#E2E8F0',
+                        background: step >= 1 ? '#1E3A8A' : '#787878ff',
                         color: step >= 1 ? 'white' : '#64748B',
                         display: 'flex',
                         alignItems: 'center',
@@ -172,7 +172,7 @@ export default function NewClaimForm({
                     <span style={{ fontSize: '11px', color: step >= 1 ? '#0F172A' : '#94A3B8', marginTop: '8px', textTransform: 'uppercase', fontWeight: '500' }}>Property</span>
                 </div>
 
-                <div style={{ flex: 1, height: '2px', background: step > 1 ? '#1E3A8A' : '#E2E8F0', marginBottom: '24px' }} />
+                <div style={{ flex: 1, height: '2px', background: step > 1 ? '#1E3A8A' : '#787878ff', marginBottom: '24px' }} />
 
                 {/* Step 2 */}
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
@@ -180,7 +180,7 @@ export default function NewClaimForm({
                         width: '32px',
                         height: '32px',
                         borderRadius: '50%',
-                        background: step >= 2 ? '#1E3A8A' : '#E2E8F0',
+                        background: step >= 2 ? '#1E3A8A' : '#787878ff',
                         color: step >= 2 ? 'white' : '#64748B',
                         display: 'flex',
                         alignItems: 'center',
@@ -193,7 +193,7 @@ export default function NewClaimForm({
                     <span style={{ fontSize: '11px', color: step >= 2 ? '#0F172A' : '#94A3B8', marginTop: '8px', textTransform: 'uppercase', fontWeight: '500' }}>Details</span>
                 </div>
 
-                <div style={{ flex: 1, height: '2px', background: step > 2 ? '#1E3A8A' : '#E2E8F0', marginBottom: '24px' }} />
+                <div style={{ flex: 1, height: '2px', background: step > 2 ? '#1E3A8A' : '#787878ff', marginBottom: '24px' }} />
 
                 {/* Step 3 */}
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
@@ -201,7 +201,7 @@ export default function NewClaimForm({
                         width: '32px',
                         height: '32px',
                         borderRadius: '50%',
-                        background: step >= 3 ? '#1E3A8A' : '#E2E8F0',
+                        background: step >= 3 ? '#1E3A8A' : '#787878ff',
                         color: step >= 3 ? 'white' : '#64748B',
                         display: 'flex',
                         alignItems: 'center',
@@ -235,7 +235,7 @@ export default function NewClaimForm({
             {/* Form Card */}
             <div style={{
                 background: 'white',
-                border: '1px solid #E2E8F0',
+                border: '1px solid #787878ff',
                 borderRadius: '12px',
                 padding: '32px',
                 maxWidth: '560px',
@@ -271,7 +271,7 @@ export default function NewClaimForm({
                                     width: '100%',
                                     padding: '12px 14px',
                                     background: '#F8FAFC',
-                                    border: '1px solid #E2E8F0',
+                                    border: '1px solid #787878ff',
                                     borderRadius: '8px',
                                     fontSize: '14px',
                                     color: '#0F172A',
@@ -300,7 +300,7 @@ export default function NewClaimForm({
                                     width: '100%',
                                     padding: '12px 14px',
                                     background: '#F8FAFC',
-                                    border: '1px solid #E2E8F0',
+                                    border: '1px solid #787878ff',
                                     borderRadius: '8px',
                                     fontSize: '14px',
                                     color: insuranceCompanyId ? '#0F172A' : '#94A3B8',
@@ -338,7 +338,7 @@ export default function NewClaimForm({
                                     width: '100%',
                                     padding: '12px 14px',
                                     background: '#F8FAFC',
-                                    border: '1px solid #E2E8F0',
+                                    border: '1px solid #787878ff',
                                     borderRadius: '8px',
                                     fontSize: '14px',
                                     color: dateOfLoss ? '#0F172A' : '#94A3B8',
@@ -411,7 +411,7 @@ export default function NewClaimForm({
                                         style={{
                                             padding: '12px',
                                             background: claimType === type.value ? '#EFF6FF' : '#F8FAFC',
-                                            border: claimType === type.value ? '2px solid #1E3A8A' : '1px solid #E2E8F0',
+                                            border: claimType === type.value ? '2px solid #1E3A8A' : '1px solid #787878ff',
                                             borderRadius: '8px',
                                             fontSize: '14px',
                                             color: claimType === type.value ? '#1E3A8A' : '#64748B',
@@ -432,7 +432,7 @@ export default function NewClaimForm({
                                         style={{
                                             padding: '12px',
                                             background: claimType === type.value ? '#EFF6FF' : '#F8FAFC',
-                                            border: claimType === type.value ? '2px solid #1E3A8A' : '1px solid #E2E8F0',
+                                            border: claimType === type.value ? '2px solid #1E3A8A' : '1px solid #787878ff',
                                             borderRadius: '8px',
                                             fontSize: '14px',
                                             color: claimType === type.value ? '#1E3A8A' : '#64748B',
@@ -468,7 +468,7 @@ export default function NewClaimForm({
                                     width: '100%',
                                     padding: '12px 14px',
                                     background: '#F8FAFC',
-                                    border: '1px solid #E2E8F0',
+                                    border: '1px solid #787878ff',
                                     borderRadius: '8px',
                                     fontSize: '14px',
                                     color: '#0F172A',
@@ -578,20 +578,20 @@ export default function NewClaimForm({
 
                         {/* Review Summary */}
                         <div style={{
-                            border: '1px solid #E2E8F0',
+                            border: '1px solid #787878ff',
                             borderRadius: '8px',
                             marginBottom: '24px',
                             overflow: 'hidden'
                         }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #E2E8F0' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #787878ff' }}>
                                 <span style={{ color: '#64748B', fontSize: '13px', textTransform: 'uppercase', fontWeight: '500' }}>Property</span>
                                 <span style={{ color: '#0F172A', fontSize: '14px', fontWeight: '500' }}>{address.split(',')[0] || address}</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #E2E8F0' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #787878ff' }}>
                                 <span style={{ color: '#64748B', fontSize: '13px', textTransform: 'uppercase', fontWeight: '500' }}>Insurance</span>
                                 <span style={{ color: '#0F172A', fontSize: '14px', fontWeight: '500' }}>{selectedInsurer?.name || 'Not Set'}</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #E2E8F0' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #787878ff' }}>
                                 <span style={{ color: '#64748B', fontSize: '13px', textTransform: 'uppercase', fontWeight: '500' }}>Loss Type</span>
                                 <span style={{ color: '#0F172A', fontSize: '14px', fontWeight: '500' }}>{claimType || 'Not Set'}</span>
                             </div>
@@ -631,7 +631,7 @@ export default function NewClaimForm({
                             <div
                                 onClick={() => fileInputRef.current?.click()}
                                 style={{
-                                    border: '2px dashed #E2E8F0',
+                                    border: '2px dashed #787878ff',
                                     borderRadius: '8px',
                                     padding: '24px',
                                     textAlign: 'center',
@@ -643,7 +643,7 @@ export default function NewClaimForm({
                                     e.currentTarget.style.background = '#F8FAFC'
                                 }}
                                 onMouseOut={(e) => {
-                                    e.currentTarget.style.borderColor = '#E2E8F0'
+                                    e.currentTarget.style.borderColor = '#787878ff'
                                     e.currentTarget.style.background = 'transparent'
                                 }}
                             >
@@ -699,7 +699,7 @@ export default function NewClaimForm({
                                                         width: '40px',
                                                         height: '40px',
                                                         borderRadius: '6px',
-                                                        background: '#E2E8F0',
+                                                        background: '#787878ff',
                                                         display: 'flex',
                                                         alignItems: 'center',
                                                         justifyContent: 'center',
@@ -824,3 +824,4 @@ export default function NewClaimForm({
         </div>
     )
 }
+

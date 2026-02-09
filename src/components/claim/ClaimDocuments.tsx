@@ -10,6 +10,7 @@ type DocumentWithUploader = ClaimDocument & {
 
 interface ClaimDocumentsProps {
     claimId: string
+    claimNumber: string
     documents: DocumentWithUploader[]
 }
 
@@ -59,7 +60,7 @@ function FileIcon({ filename }: { filename: string }) {
     return <DocIcon />
 }
 
-export function ClaimDocuments({ claimId, documents }: ClaimDocumentsProps) {
+export function ClaimDocuments({ claimId, claimNumber, documents }: ClaimDocumentsProps) {
     const router = useRouter()
     const [isUploading, setIsUploading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -104,7 +105,7 @@ export function ClaimDocuments({ claimId, documents }: ClaimDocumentsProps) {
                 const formData = new FormData()
                 formData.append('file', file)
 
-                const response = await fetch(`/api/claims/${claimId}/documents`, {
+                const response = await fetch(`/api/claims/${claimNumber}/documents`, {
                     method: 'POST',
                     body: formData
                 })
@@ -128,7 +129,7 @@ export function ClaimDocuments({ claimId, documents }: ClaimDocumentsProps) {
     // Download a document
     async function handleDownload(documentId: string, filename: string) {
         try {
-            const response = await fetch(`/api/claims/${claimId}/documents/${documentId}?download=true`)
+            const response = await fetch(`/api/claims/${claimNumber}/documents/${documentId}?download=true`)
             if (!response.ok) {
                 throw new Error('Download failed')
             }
