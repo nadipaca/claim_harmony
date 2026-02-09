@@ -36,16 +36,16 @@ export default async function AdminClaimsPage() {
                 </div>
             </div>
 
-            <div style={{ display: "flex", gap: "16px", marginBottom: "24px", marginTop: "16px" }}>
-                <div style={{ background: "white", border: "1px solid #bebfc1ff", borderRadius: "8px", padding: "16px 24px", minWidth: "140px" }}>
+            <div className="chStatsGrid" style={{ marginBottom: "24px", marginTop: "16px" }}>
+                <div style={{ background: "white", border: "1px solid #bebfc1ff", borderRadius: "8px", padding: "16px 24px", minWidth: "140px", flex: "1" }}>
                     <p style={{ color: "#64748B", fontSize: "12px", textTransform: "uppercase", marginBottom: "4px" }}>Total Claims</p>
                     <p style={{ color: "#0F172A", fontSize: "24px", fontWeight: "bold" }}>{claims.length}</p>
                 </div>
-                <div style={{ background: "white", border: "1px solid #bebfc1ff", borderRadius: "8px", padding: "16px 24px", minWidth: "140px" }}>
+                <div style={{ background: "white", border: "1px solid #bebfc1ff", borderRadius: "8px", padding: "16px 24px", minWidth: "140px", flex: "1" }}>
                     <p style={{ color: "#64748B", fontSize: "12px", textTransform: "uppercase", marginBottom: "4px" }}>New</p>
                     <p style={{ color: "#92400E", fontSize: "24px", fontWeight: "bold" }}>{claims.filter((c) => c.status === "NEW").length}</p>
                 </div>
-                <div style={{ background: "white", border: "1px solid #bebfc1ff", borderRadius: "8px", padding: "16px 24px", minWidth: "140px" }}>
+                <div style={{ background: "white", border: "1px solid #bebfc1ff", borderRadius: "8px", padding: "16px 24px", minWidth: "140px", flex: "1" }}>
                     <p style={{ color: "#64748B", fontSize: "12px", textTransform: "uppercase", marginBottom: "4px" }}>Accepted</p>
                     <p style={{ color: "#065F46", fontSize: "24px", fontWeight: "bold" }}>
                         {claims.filter((c) => c.status === "ACCEPTED").length}

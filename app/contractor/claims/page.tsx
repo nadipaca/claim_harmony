@@ -123,7 +123,7 @@ export default async function ContractorClaimsPage({
             </div>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: '24px', borderBottom: '1px solid #787878ff', marginBottom: '24px' }}>
+            <div className="chTabs">
                 <Link
                     href="/contractor/claims?tab=available"
                     style={{
@@ -160,7 +160,7 @@ export default async function ContractorClaimsPage({
                     background: 'white',
                     border: '1px solid #787878ff',
                     borderRadius: '12px',
-                    padding: '48px',
+                    padding: '48px 24px',
                     textAlign: 'center'
                 }}>
                     <div style={{
@@ -193,14 +193,12 @@ export default async function ContractorClaimsPage({
                         return (
                             <div
                                 key={claim.id}
+                                className="chClaimListItem"
                                 style={{
                                     background: 'white',
                                     border: '1px solid #bebfc1ff',
                                     borderRadius: '12px',
-                                    padding: '20px 24px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '20px'
+                                    padding: '20px 24px'
                                 }}
                             >
                                 {/* House Icon */}
@@ -223,8 +221,8 @@ export default async function ContractorClaimsPage({
                                 </div>
 
                                 {/* Claim Info */}
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
+                                <div style={{ flex: 1, minWidth: 0, width: '100%' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
                                         <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F172A', margin: 0 }}>
                                             {claim.address.split(',')[0]}
                                             {claim.address.includes(',') && (

@@ -144,6 +144,58 @@ body {
   }
 }
 
+/* Responsive stats cards */
+.chStatsGrid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .chStatsGrid {
+    flex-direction: column;
+  }
+
+  .chStatsGrid > div {
+    min-width: 100% !important;
+  }
+}
+
+/* Responsive claim list item */
+.chClaimListItem {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .chClaimListItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .chClaimListItem > a {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Responsive tabs */
+.chTabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid #787878ff;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  .chTabs {
+    gap: 16px;
+  }
+}
+
 /* Claim detail: insurer portal button */
 .chClaimsPortalButton {
   display: inline-flex;
