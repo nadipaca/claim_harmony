@@ -70,9 +70,9 @@ export default async function ConsumerClaimsPage() {
     }))
 
     return (
-        <div style={{ padding: '24px 32px' }}>
+        <div className="chPageContainer">
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+            <div className="chPageHeader">
                 <div>
                     <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0F172A', marginBottom: '4px' }}>
                         Dashboard
@@ -116,7 +116,7 @@ export default async function ConsumerClaimsPage() {
                         background: 'white',
                         border: '1px solid #787878ff',
                         borderRadius: '12px',
-                        padding: '48px',
+                        padding: '48px 24px',
                         textAlign: 'center'
                     }}>
                         <div style={{
@@ -156,7 +156,7 @@ export default async function ConsumerClaimsPage() {
                         </Link>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                    <div className="chClaimCardsGrid">
                         {activeClaims.map((claim: ClaimWithRelations) => (
                             <div
                                 key={claim.id}

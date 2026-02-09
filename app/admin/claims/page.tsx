@@ -28,7 +28,7 @@ export default async function AdminClaimsPage() {
     }))
 
     return (
-        <div style={{ padding: "24px 32px" }}>
+        <div className="chPageContainer">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                 <div>
                     <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#0F172A", marginBottom: "4px" }}>All Claims</h1>

@@ -79,6 +79,12 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+  .chClaimDetailPage {
+    padding: 16px;
+  }
+}
+
 @media (max-width: 520px) {
   .chClaimDetailPage {
     padding: 16px;
@@ -88,6 +94,53 @@ body {
   }
   .chClaimPartyMeta {
     display: none;
+  }
+}
+
+/* Responsive page container */
+.chPageContainer {
+  padding: 24px 32px;
+}
+
+@media (max-width: 768px) {
+  .chPageContainer {
+    padding: 16px;
+  }
+}
+
+/* Responsive grid for claim cards */
+.chClaimCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .chClaimCardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .chClaimCardsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Responsive header */
+.chPageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .chPageHeader {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 

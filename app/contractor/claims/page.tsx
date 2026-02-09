@@ -83,7 +83,7 @@ export default async function ContractorClaimsPage({
     const claims = activeTab === 'active' ? activeClaims : availableClaims
 
     return (
-        <div style={{ padding: '24px 32px' }}>
+        <div className="chPageContainer">
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <div>
