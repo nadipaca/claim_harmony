@@ -3,7 +3,6 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Role } from "@prisma/client"
 import { AppShell } from "@/components/shell/AppShell"
-import { ClaimsIcon, DashboardIcon, UsersIcon } from "@/components/shell/icons"
 import { getUserDisplayName } from "@/lib/user"
 
 export default async function ConsumerLayout({
@@ -30,9 +29,9 @@ export default async function ConsumerLayout({
             badgeColor="#1E3A8A"
             roleColor="#D4AF37"
             navItems={[
-                { href: "/consumer/claims", label: "Dashboard", icon: <DashboardIcon /> },
-                { href: "/consumer/claims", label: "All Claims", icon: <ClaimsIcon /> },
-                { href: "/consumer/claims", label: "Find Pros", icon: <UsersIcon /> },
+                { href: "/consumer/claims", label: "Dashboard", icon: "dashboard" },
+                { href: "/consumer/claims", label: "All Claims", icon: "claims" },
+                { href: "/consumer/claims", label: "Find Pros", icon: "users" },
             ]}
         >
             {children}

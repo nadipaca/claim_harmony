@@ -3,7 +3,6 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Role } from "@prisma/client"
 import { AppShell } from "@/components/shell/AppShell"
-import { DashboardIcon, JobBoardIcon } from "@/components/shell/icons"
 import { getUserDisplayName } from "@/lib/user"
 
 export default async function ContractorLayout({
@@ -31,8 +30,8 @@ export default async function ContractorLayout({
             badgeColor="#1E3A8A"
             roleColor="#D4AF37"
             navItems={[
-                { href: "/contractor/claims", label: "Dashboard", icon: <DashboardIcon /> },
-                { href: "/contractor/claims", label: "Job Board", icon: <JobBoardIcon /> },
+                { href: "/contractor/claims", label: "Dashboard", icon: "dashboard" },
+                { href: "/contractor/claims", label: "Job Board", icon: "jobBoard" },
             ]}
         >
             {children}

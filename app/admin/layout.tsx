@@ -3,7 +3,6 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Role } from "@prisma/client"
 import { AppShell } from "@/components/shell/AppShell"
-import { ClaimsIcon, DashboardIcon, UsersIcon } from "@/components/shell/icons"
 import { getUserDisplayName } from "@/lib/user"
 
 export default async function AdminLayout({
@@ -31,9 +30,9 @@ export default async function AdminLayout({
             badgeColor="#DC2626"
             roleColor="#DC2626"
             navItems={[
-                { href: "/admin/claims", label: "Dashboard", icon: <DashboardIcon /> },
-                { href: "/admin/claims", label: "All Claims", icon: <ClaimsIcon /> },
-                { href: "/admin/claims", label: "Users", icon: <UsersIcon /> },
+                { href: "/admin/claims", label: "Dashboard", icon: "dashboard" },
+                { href: "/admin/claims", label: "All Claims", icon: "claims" },
+                { href: "/admin/claims", label: "Users", icon: "users" },
             ]}
         >
             {children}

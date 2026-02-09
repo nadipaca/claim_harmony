@@ -140,7 +140,9 @@ export default async function AdminClaimsPage() {
                     background: 'white',
                     border: '1px solid #bebfc1ff',
                     borderRadius: '12px',
-                    overflow: 'hidden'
+                    overflowX: 'auto',
+                    overflowY: 'hidden',
+                    maxWidth: '100%'
                 }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <thead>

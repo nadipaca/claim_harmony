@@ -13,13 +13,15 @@ interface ClaimDetailViewProps {
 
 export function ClaimDetailView({ claim, backHref, headerRight, pageBackground = "#F8FAFC" }: ClaimDetailViewProps) {
     return (
-        <div style={{ padding: "24px 32px", background: pageBackground, minHeight: "100vh" }}>
+        <div className="chClaimDetailPage" style={{ padding: "24px 32px", background: pageBackground, boxSizing: "border-box" }}>
             <div
                 style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                     marginBottom: "24px",
+                    gap: "16px",
+                    flexWrap: "wrap",
                 }}
             >
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -48,8 +50,8 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                 {headerRight ? <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>{headerRight}</div> : null}
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: "24px" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <div className="chClaimDetailGrid">
+                <div style={{ display: "flex", flexDirection: "column", gap: "24px", minWidth: 0 }}>
                     <div
                         style={{
                             background: "white",
@@ -59,6 +61,7 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                             display: "flex",
                             flexDirection: "column",
                             gap: "24px",
+                            minWidth: 0,
                         }}
                     >
                         <div
@@ -66,6 +69,8 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                                 display: "flex",
                                 justifyContent: "space-between",
                                 alignItems: "flex-start",
+                                gap: "16px",
+                                flexWrap: "wrap",
                             }}
                         >
                             <div>
@@ -111,14 +116,9 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                             </div>
                         </div>
 
-                        <div
-                            style={{
-                                display: "grid",
-                                gridTemplateColumns: "1fr 1fr 1fr",
-                                gap: "16px",
-                            }}
-                        >
+                        <div className="chClaimPartyCards">
                             <div
+                                className="chClaimPartyCard"
                                 style={{
                                     borderWidth: "1px 1px 1px 3px",
                                     borderStyle: "solid",
@@ -126,6 +126,7 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                                     borderRadius: "8px",
                                     padding: "16px",
                                     background: "white",
+                                    boxSizing: "border-box",
                                 }}
                             >
                                 <p
@@ -186,12 +187,14 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                             </div>
 
                             <div
+                                className="chClaimPartyCard"
                                 style={{
                                     borderWidth: "1px 1px 1px 3px",
                                     borderStyle: "solid",
                                     borderColor: "#D4AF37",
                                     borderRadius: "8px",
                                     padding: "16px",
+                                    boxSizing: "border-box",
                                 }}
                             >
                                 <p
@@ -252,6 +255,7 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                             </div>
 
                             <div
+                                className="chClaimPartyCard"
                                 style={{
                                     borderWidth: "1px 1px 1px 3px",
                                     borderStyle: "solid",
@@ -259,6 +263,7 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                                     borderRadius: "8px",
                                     padding: "16px",
                                     background: "white",
+                                    boxSizing: "border-box",
                                 }}
                             >
                                 <p
@@ -336,11 +341,44 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                     <ClaimTimeline events={claim.events} />
                 </div>
 
-                <div>
+                <div style={{ minWidth: 0 }}>
                     <ClaimDocuments claimId={claim.id} claimNumber={claim.claimNumber} documents={claim.documents} />
                 </div>
             </div>
+
+            <style jsx>{`
+                .chClaimDetailGrid {
+                    display: grid;
+                    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+                    gap: 24px;
+                    align-items: start;
+                }
+                .chClaimPartyCards {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 16px;
+                    align-items: stretch;
+                }
+                .chClaimPartyCard {
+                    flex: 1 1 240px;
+                    min-width: 220px;
+                    height: 120px;
+                    overflow: hidden;
+                }
+                @media (max-width: 1024px) {
+                    .chClaimDetailGrid {
+                        grid-template-columns: 1fr;
+                    }
+                }
+                @media (max-width: 520px) {
+                    .chClaimDetailPage {
+                        padding: 16px;
+                    }
+                    .chClaimPartyCard {
+                        min-width: 100%;
+                    }
+                }
+            `}</style>
         </div>
     )
 }
-

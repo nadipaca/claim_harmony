@@ -1,0 +1,245 @@
+"use client"
+
+import type { ReactNode } from "react"
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { ClaimsIcon, DashboardIcon, JobBoardIcon, UsersIcon } from "./icons"
+
+export type ShellIconKey = "dashboard" | "claims" | "users" | "jobBoard"
+
+export type NavItem = {
+    href: string
+    label: string
+    icon: ShellIconKey
+}
+
+interface ShellFrameProps {
+    children: ReactNode
+    navItems: NavItem[]
+    userName: string
+    roleLabel: string
+    badgeColor: string
+    roleColor: string
+}
+
+function Icon({ icon }: { icon: ShellIconKey }) {
+    switch (icon) {
+        case "dashboard":
+            return <DashboardIcon />
+        case "claims":
+            return <ClaimsIcon />
+        case "users":
+            return <UsersIcon />
+        case "jobBoard":
+            return <JobBoardIcon />
+    }
+}
+
+const STORAGE_KEY = "claimHarmony.sidebarCollapsed"
+
+export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor, roleColor }: ShellFrameProps) {
+    const [collapsed, setCollapsed] = useStateFromStorage(STORAGE_KEY, false)
+
+    return (
+        <div
+            className={collapsed ? "chShell chShell--collapsed" : "chShell"}
+            style={{ display: "flex", height: "100dvh", minHeight: "100vh", background: "#F8FAFC", overflow: "hidden" }}
+        >
+            <aside
+                style={{
+                    width: collapsed ? "72px" : "220px",
+                    transition: "width 160ms ease",
+                    background: "#233665",
+                    display: "flex",
+                    flexDirection: "column",
+                    flexShrink: 0,
+                    overflow: "hidden",
+                }}
+            >
+                <div style={{ padding: "16px 12px", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div
+                        style={{
+                            width: "28px",
+                            height: "28px",
+                            borderRadius: "6px",
+                            background: "#D4AF37",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                        }}
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                            />
+                        </svg>
+                    </div>
+                    <span
+                        className="chShell__brand"
+                        style={{
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                            color: "white",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            opacity: collapsed ? 0 : 1,
+                            transition: "opacity 120ms ease",
+                        }}
+                    >
+                        ClaimHarmony
+                    </span>
+
+                    <button
+                        type="button"
+                        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                        onClick={() => setCollapsed(!collapsed)}
+                        style={{
+                            marginLeft: "auto",
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "8px",
+                            border: "1px solid rgba(255,255,255,0.18)",
+                            background: "rgba(255,255,255,0.08)",
+                            color: "rgba(255,255,255,0.9)",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                        }}
+                    >
+                        <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d={collapsed ? "M9 5l7 7-7 7" : "M15 19l-7-7 7-7"} />
+                        </svg>
+                    </button>
+                </div>
+
+                <nav style={{ flex: 1, padding: "8px 8px", overflowY: "auto" }}>
+                    {navItems.map((item) => (
+                        <Link
+                            key={`${item.href}:${item.label}`}
+                            href={item.href}
+                            title={collapsed ? item.label : undefined}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "10px",
+                                padding: "10px 12px",
+                                borderRadius: "8px",
+                                color: "rgba(255,255,255,0.75)",
+                                textDecoration: "none",
+                                fontSize: "14px",
+                                marginBottom: "4px",
+                                justifyContent: collapsed ? "center" : "flex-start",
+                            }}
+                        >
+                            <Icon icon={item.icon} />
+                            <span
+                                style={{
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    opacity: collapsed ? 0 : 1,
+                                    width: collapsed ? 0 : "auto",
+                                    transition: "opacity 120ms ease",
+                                }}
+                            >
+                                {item.label}
+                            </span>
+                        </Link>
+                    ))}
+                </nav>
+
+                <div style={{ padding: "12px", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+                        <div
+                            style={{
+                                width: "32px",
+                                height: "32px",
+                                borderRadius: "50%",
+                                background: badgeColor,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "white",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                flexShrink: 0,
+                            }}
+                        >
+                            {userName.charAt(0).toUpperCase()}
+                        </div>
+                        <div style={{ minWidth: 0, opacity: collapsed ? 0 : 1, transition: "opacity 120ms ease" }}>
+                            <p style={{ color: "white", fontSize: "13px", fontWeight: "500", margin: 0, overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {userName}
+                            </p>
+                            <p
+                                style={{
+                                    color: roleColor,
+                                    fontSize: "10px",
+                                    fontWeight: "600",
+                                    margin: 0,
+                                    textTransform: "uppercase",
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                }}
+                            >
+                                {roleLabel}
+                            </p>
+                        </div>
+                    </div>
+
+                    <Link
+                        href="/api/auth/signout"
+                        title={collapsed ? "Sign Out" : undefined}
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            color: "rgba(255,255,255,0.55)",
+                            fontSize: "12px",
+                            textDecoration: "none",
+                            justifyContent: collapsed ? "center" : "flex-start",
+                        }}
+                    >
+                        <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                            />
+                        </svg>
+                        <span style={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : "auto", overflow: "hidden" }}>Sign Out</span>
+                    </Link>
+                </div>
+            </aside>
+
+            <main style={{ flex: 1, minWidth: 0, overflowY: "auto", overflowX: "hidden" }}>{children}</main>
+        </div>
+    )
+}
+
+function useStateFromStorage(key: string, defaultValue: boolean) {
+    const [value, setValue] = useState(() => {
+        try {
+            const raw = window.localStorage.getItem(key)
+            if (raw === null) return defaultValue
+            return raw === "true"
+        } catch {
+            return defaultValue
+        }
+    })
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(key, String(value))
+        } catch {
+            // ignore
+        }
+    }, [key, value])
+
+    return [value, setValue] as const
+}
