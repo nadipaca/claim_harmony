@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/rbac"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
 import { Claim, InsuranceCompany, User } from "@prisma/client"
+import { ClaimsHistoryTable, type ClaimsHistoryRow } from "@/components/claims/ClaimsHistoryTable"
 
 // Type for claims with included relations
 type ClaimWithRelations = Claim & {
@@ -57,6 +58,16 @@ export default async function ConsumerClaimsPage() {
     // Get priority active claims (most recent 3)
     const activeClaims = claims.slice(0, 3)
     const userName = user.name || user.email?.split('@')[0] || 'User'
+    const historyClaims = claims.slice(0, 12)
+
+    const historyRows: ClaimsHistoryRow[] = historyClaims.map((claim) => ({
+        id: claim.id,
+        createdAtIso: claim.createdAt.toISOString(),
+        claimNumber: claim.claimNumber,
+        address: claim.address,
+        type: claim.type,
+        status: claim.status,
+    }))
 
     return (
         <div style={{ padding: '24px 32px' }}>
@@ -71,30 +82,6 @@ export default async function ConsumerClaimsPage() {
                     </p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '10px 16px',
-                        background: 'white',
-                        border: '1px solid #787878ff',
-                        borderRadius: '8px'
-                    }}>
-                        <svg width="16" height="16" fill="none" stroke="#94A3B8" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <input
-                            type="text"
-                            placeholder="Search address or Claim ID..."
-                            style={{
-                                border: 'none',
-                                outline: 'none',
-                                fontSize: '14px',
-                                color: '#0F172A',
-                                width: '200px'
-                            }}
-                        />
-                    </div>
                     <Link
                         href="/consumer/claims/new"
                         style={{
@@ -299,96 +286,7 @@ export default async function ConsumerClaimsPage() {
                 </div>
 
                 {claims.length > 0 ? (
-                    <div style={{
-                        background: 'white',
-                        border: '1px solid #787878ff',
-                        borderRadius: '12px',
-                        overflowX: 'auto',
-                        overflowY: 'hidden',
-                        maxWidth: '100%'
-                    }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #787878ff' }}>
-                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Date</th>
-                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Claim ID</th>
-                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Property</th>
-                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Type</th>
-                                    <th style={{ padding: '14px 20px', textAlign: 'left', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Status</th>
-                                    <th style={{ padding: '14px 20px', textAlign: 'right', color: '#64748B', fontSize: '12px', fontWeight: '500', textTransform: 'uppercase' }}>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {claims.map((claim: ClaimWithRelations) => (
-                                    <tr key={claim.id}>
-                                        <td style={{ padding: '16px 20px', color: '#0F172A', fontSize: '14px' }}>
-                                            {new Date(claim.createdAt).toLocaleDateString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric',
-                                                year: 'numeric'
-                                            })}
-                                        </td>
-                                        <td style={{ padding: '16px 20px', color: '#1E3A8A', fontSize: '14px', fontWeight: '500' }}>
-                                            {claim.claimNumber}
-                                        </td>
-                                        <td style={{ padding: '16px 20px', color: '#0F172A', fontSize: '14px' }}>
-                                            {claim.address.length > 30 ? claim.address.substring(0, 30) + '...' : claim.address}
-                                        </td>
-                                        <td style={{ padding: '16px 20px', color: '#64748B', fontSize: '14px' }}>
-                                            {claim.type}
-                                        </td>
-                                        <td style={{ padding: '16px 20px' }}>
-                                            <span style={{
-                                                background: claim.status === 'NEW' ? '#FEF3C7' : '#D1FAE5',
-                                                color: claim.status === 'NEW' ? '#92400E' : '#065F46',
-                                                padding: '4px 10px',
-                                                borderRadius: '9999px',
-                                                fontSize: '12px',
-                                                fontWeight: '500'
-                                            }}>
-                                                {claim.status}
-                                            </span>
-                                        </td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'right' }}>
-                                            <Link
-                                                href={`/consumer/claims/${claim.claimNumber.replace('CLM-', '')}`}
-                                                style={{
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    gap: '4px',
-                                                    color: '#1E3A8A',
-                                                    fontSize: '14px',
-                                                    fontWeight: '500',
-                                                    textDecoration: 'none'
-                                                }}
-                                            >
-                                                View
-                                                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        {claims.length > 0 && (
-                            <div style={{
-                                padding: '12px 20px',
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                color: '#64748B',
-                                fontSize: '13px'
-                            }}>
-                                <span>Showing 1-{Math.min(claims.length, 12)} of {claims.length}</span>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button style={{ padding: '6px 12px', border: '1px solid #787878ff', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Previous</button>
-                                    <button style={{ padding: '6px 12px', border: '1px solid #787878ff', borderRadius: '6px', background: 'white', color: '#64748B', cursor: 'pointer' }}>Next</button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    <ClaimsHistoryTable rows={historyRows} totalCount={claims.length} baseHref="/consumer/claims" />
                 ) : (
                     <div style={{
                         background: 'white',

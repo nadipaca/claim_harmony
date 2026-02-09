@@ -1,9 +1,17 @@
 'use client'
 
-import { signIn } from 'next-auth/react'
-import { FormEvent, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
+import type { FormEvent } from 'react'
+import { useState } from 'react'
+
+const TEST_CREDENTIALS = [
+    { label: 'Consumer', email: 'consumer@test.com', password: 'Password123!' },
+    { label: 'Contractor', email: 'contractor@test.com', password: 'Password123!' },
+    { label: 'Admin', email: 'admin@test.com', password: 'Password123!' },
+] as const
 
 export default function LoginPage() {
     const router = useRouter()
@@ -21,7 +29,7 @@ export default function LoginPage() {
             const result = await signIn('credentials', {
                 email,
                 password,
-                redirect: false
+                redirect: false,
             })
 
             if (result?.error) {
@@ -37,7 +45,7 @@ export default function LoginPage() {
                 const roleRedirects: Record<string, string> = {
                     CONSUMER: '/consumer/claims',
                     CONTRACTOR: '/contractor/claims',
-                    ADMIN: '/admin/claims'
+                    ADMIN: '/admin/claims',
                 }
 
                 const redirectUrl = roleRedirects[session.user.role] || '/'
@@ -45,221 +53,124 @@ export default function LoginPage() {
             } else {
                 router.push('/')
             }
-        } catch (err) {
+        } catch {
             setError('An error occurred during login')
             setLoading(false)
         }
     }
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#E5E7EB',
-            padding: '2rem'
-        }}>
-            <div style={{
-                display: 'flex',
-                width: '100%',
-                maxWidth: '900px',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)'
-            }}>
-                {/* Left Panel - Branded */}
-                <div style={{
-                    width: '50%',
-                    background: '#1E3A8A',
-                    padding: '48px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    minHeight: '500px'
-                }}>
-                    <div>
-                        {/* Logo */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '64px' }}>
-                            <div style={{
-                                width: '40px',
-                                height: '40px',
-                                borderRadius: '8px',
-                                background: '#D4AF37',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
+        <div className="min-h-screen flex items-center justify-center bg-[#EEF2F6] px-4 py-10">
+            <div className="w-full max-w-[980px] rounded-2xl overflow-hidden shadow-[0_30px_70px_-30px_rgba(15,23,42,0.35)] bg-white border border-slate-300">
+                <div className="flex flex-col md:flex-row min-h-[560px]">
+                    <div
+                        className="md:w-1/2 relative text-white p-8 sm:p-10 md:p-12 flex flex-col justify-between"
+                        style={{
+                            background: 'linear-gradient(135deg, #0B1220 0%, #0B132B 55%, #0E1A3A 100%)',
+                        }}
+                    >
+                        <div
+                            aria-hidden
+                            className="absolute inset-0"
+                            style={{
+                                background:
+                                    'radial-gradient(600px 300px at 20% 15%, rgba(212,175,55,0.18) 0%, rgba(212,175,55,0) 60%), radial-gradient(500px 300px at 85% 70%, rgba(30,58,138,0.28) 0%, rgba(30,58,138,0) 60%)',
+                            }}
+                        />
+
+                        <div className="relative flex flex-col items-start gap-10">
+                            <div className="flex items-center gap-5">
+                                <Image src="/logo.svg" alt="ClaimHarmony" width={64} height={64} priority />
+                                <div className="text-[28px] font-bold tracking-tight">
+                                    Claim<span style={{ color: '#D4AF37' }}>Harmony</span>
+                                </div>
                             </div>
-                            <span style={{ fontSize: '24px', fontWeight: 'bold', color: 'white' }}>ClaimHarmony</span>
-                        </div>
-
-                        {/* Heading */}
-                        <h1 style={{
-                            fontSize: '42px',
-                            fontWeight: 'bold',
-                            color: 'white',
-                            lineHeight: '1.2',
-                            marginBottom: '24px'
-                        }}>
-                            Simplify your<br />property claims.
-                        </h1>
-                        <p style={{ fontSize: '16px', color: '#93C5FD', lineHeight: '1.6' }}>
-                            The trusted Florida network connecting<br />
-                            homeowners with vetted restoration<br />
-                            professionals.
-                        </p>
-                    </div>
-
-                    {/* Footer */}
-                    <div style={{ fontSize: '14px', color: '#93C5FD' }}>
-                        © 2026 ClaimHarmony Platform. All rights reserved.
-                    </div>
-                </div>
-
-                {/* Right Panel - Form */}
-                <div style={{
-                    width: '50%',
-                    background: 'white',
-                    padding: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-                    <div style={{ width: '100%', maxWidth: '320px' }}>
-                        <div style={{ marginBottom: '32px' }}>
-                            <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#0F172A', marginBottom: '8px' }}>
-                                Welcome back
+                            <div>
+                            <h2 className="text-[clamp(28px,3.5vw,40px)] font-semibold leading-tight">
+                                Simplify your property
+                                <br />
+                                claims.
                             </h2>
-                            <p style={{ color: '#6B7280' }}>
-                                Log in to your dashboard.
+                            <p className="mt-5 text-[15px] text-slate-300/90 max-w-[30ch] leading-relaxed">
+                                Connected, vetted, and resolved.
                             </p>
+                            </div>
                         </div>
 
-                        <form onSubmit={handleSubmit}>
-                            {/* Email Field */}
-                            <div style={{ marginBottom: '20px' }}>
-                                <label style={{
-                                    display: 'block',
-                                    fontSize: '12px',
-                                    fontWeight: '600',
-                                    color: '#6B7280',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.05em',
-                                    marginBottom: '8px'
-                                }}>
-                                    Email Address
-                                </label>
+                        <div className="relative text-xs text-slate-400 mt-10">© 2026 ClaimHarmony</div>
+                    </div>
+
+                    <div className="md:w-1/2 p-8 sm:p-10 md:p-12 flex items-center">
+                        <div className="w-full max-w-sm mx-auto">
+                            <h2 className="text-2xl font-semibold text-slate-900">Welcome back</h2>
+                            <p className="text-sm text-slate-500">Log in to your workspace.</p>
+
+                            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    placeholder="name@company.com"
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px 16px',
-                                        border: '1px solid #E5E7EB',
-                                        borderRadius: '8px',
-                                        fontSize: '14px',
-                                        outline: 'none',
-                                        boxSizing: 'border-box'
-                                    }}
+                                    placeholder="Email address"
+                                    autoComplete="email"
+                                    className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-[#1E3A8A] focus:ring-4 focus:ring-[#1E3A8A]/10"
                                 />
-                            </div>
-
-                            {/* Password Field */}
-                            <div style={{ marginBottom: '24px' }}>
-                                <label style={{
-                                    display: 'block',
-                                    fontSize: '12px',
-                                    fontWeight: '600',
-                                    color: '#6B7280',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.05em',
-                                    marginBottom: '8px'
-                                }}>
-                                    Password
-                                </label>
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    placeholder="••••••••"
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px 16px',
-                                        border: '1px solid #E5E7EB',
-                                        borderRadius: '8px',
-                                        fontSize: '14px',
-                                        outline: 'none',
-                                        boxSizing: 'border-box'
-                                    }}
+                                    placeholder="Password"
+                                    autoComplete="current-password"
+                                    className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-[#1E3A8A] focus:ring-4 focus:ring-[#1E3A8A]/10"
                                 />
-                            </div>
 
-                            {/* Error Message */}
-                            {error && (
-                                <div style={{
-                                    background: '#FEF2F2',
-                                    border: '1px solid #FECACA',
-                                    color: '#DC2626',
-                                    padding: '12px',
-                                    borderRadius: '8px',
-                                    fontSize: '14px',
-                                    marginBottom: '16px'
-                                }}>
-                                    {error}
-                                </div>
-                            )}
+                                {error && (
+                                    <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+                                )}
 
-                            {/* Sign In Button */}
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                style={{
-                                    width: '100%',
-                                    padding: '14px',
-                                    background: '#1E3A8A',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    fontSize: '14px',
-                                    fontWeight: '600',
-                                    cursor: loading ? 'not-allowed' : 'pointer',
-                                    opacity: loading ? 0.5 : 1
-                                }}
-                            >
-                                {loading ? 'Signing in...' : 'Sign In'}
-                            </button>
-                        </form>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full rounded-lg bg-[#1E3A8A] text-white py-3 text-sm font-semibold shadow-[0_10px_20px_-12px_rgba(30,58,138,0.7)] disabled:opacity-60 disabled:cursor-not-allowed"
+                                >
+                                    {loading ? 'Signing in...' : 'Sign In'}
+                                </button>
+                            </form>
 
-                        {/* Sign Up Link */}
-                        <div style={{ marginTop: '24px', textAlign: 'center' }}>
-                            <p style={{ fontSize: '14px', color: '#6B7280' }}>
+                            <div className="mt-6 text-center text-sm text-slate-600">
                                 Don&apos;t have an account?{' '}
-                                <Link href="/signup" style={{ color: '#1E3A8A', fontWeight: '600', textDecoration: 'underline' }}>
+                                <Link href="/signup" className="text-[#1E3A8A] font-semibold hover:underline">
                                     Sign up
                                 </Link>
-                            </p>
-                        </div>
+                            </div>
 
-                        {/* Test Credentials - Development Only */}
-                        {process.env.NODE_ENV === 'development' && (
-                            <div style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
-                                <p style={{ fontSize: '12px', fontWeight: '500', color: '#0F172A', marginBottom: '8px' }}>
-                                    Test Credentials:
-                                </p>
-                                <div style={{ fontSize: '12px', color: '#6B7280' }}>
-                                    <p>Consumer: consumer@test.com / Password123!</p>
-                                    <p>Contractor: contractor@test.com / Password123!</p>
+                            <div className="pt-6 border-t border-slate-200">
+                                <div className="text-xs font-semibold text-slate-900 mb-3">Test credentials <span className="text-xs text-slate-400 mb-3 pl-3">[ click row to autofill credentials ]</span></div>
+                                <div className="space-y-2">
+                                    {TEST_CREDENTIALS.map((cred) => (
+                                        <button
+                                            key={cred.label}
+                                            type="button"
+                                            onClick={() => {
+                                                setEmail(cred.email)
+                                                setPassword(cred.password)
+                                            }}
+                                            className="w-full text-left rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 transition"
+                                        >
+                                            <div className="flex items-center justify-between gap-4">
+                                                <div className="min-w-0">
+                                                    <div className="text-xs font-semibold text-slate-900">{cred.label}</div>
+                                                
+                                                </div>
+                                                <div className="text-xs text-slate-600 truncate">{cred.email}</div>
+                                                <div className="text-xs font-mono text-slate-500 flex-shrink-0">{cred.password}</div>
+                                            </div>
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
-                        )}
+                        </div>
                     </div>
                 </div>
             </div>
