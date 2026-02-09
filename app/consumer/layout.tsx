@@ -26,7 +26,7 @@ export default async function ConsumerLayout({
         <AppShell
             userName={userName}
             roleLabel={session.user.role}
-            badgeColor="#0E1A3A"
+            badgeColor="#0943c9"
             roleColor="#D4AF37"
             navItems={[
                 { href: "/consumer/claims", label: "Dashboard", icon: "dashboard" },

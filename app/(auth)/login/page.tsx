@@ -78,8 +78,8 @@ export default function LoginPage() {
                             }}
                         />
 
-                        <div className="relative flex flex-col items-start gap-10">
-                            <div className="flex items-center gap-5">
+                        <div className="relative flex flex-col items-center text-center md:items-start md:text-left gap-10">
+                            <div className="flex items-center gap-5 justify-center md:justify-start w-full">
                                 <Image src="/logo.svg" alt="ClaimHarmony" width={64} height={64} priority />
                                 <div className="text-[28px] font-bold tracking-tight">
                                     Claim<span style={{ color: '#D4AF37' }}>Harmony</span>
@@ -91,19 +91,19 @@ export default function LoginPage() {
                                 <br />
                                 claims.
                             </h2>
-                            <p className="mt-5 text-[15px] text-slate-300/90 max-w-[30ch] leading-relaxed">
+                            <p className="mt-5 text-[15px] text-slate-300/90 max-w-[30ch] leading-relaxed mx-auto md:mx-0">
                                 Connected, vetted, and resolved.
                             </p>
                             </div>
                         </div>
 
-                        <div className="relative text-xs text-slate-400 mt-10">© 2026 ClaimHarmony</div>
+                        <div className="relative text-xs text-slate-400 mt-10 text-center md:text-left w-full">© 2026 ClaimHarmony</div>
                     </div>
 
                     <div className="md:w-1/2 p-8 sm:p-10 md:p-12 flex items-center">
                         <div className="w-full max-w-sm mx-auto">
-                            <h2 className="text-2xl font-semibold text-slate-900">Welcome back</h2>
-                            <p className="text-sm text-slate-500">Log in to your workspace.</p>
+                            <h2 className="text-2xl font-semibold text-slate-900 text-center md:text-left">Welcome back</h2>
+                            <p className="text-sm text-slate-500 text-center md:text-left">Log in to your workspace.</p>
 
                             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                                 <input
@@ -177,4 +177,3 @@ export default function LoginPage() {
         </div>
     )
 }
-

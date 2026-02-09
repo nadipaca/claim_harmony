@@ -50,7 +50,7 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
                 style={{
                     width: collapsed ? "72px" : "220px",
                     transition: "width 160ms ease",
-                    background: "#233665",
+                    background: "#0E1A3A",
                     display: "flex",
                     flexDirection: "column",
                     flexShrink: 0,
@@ -202,7 +202,7 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
                     </div>
 
                     <Link
-                        href="/api/auth/signout"
+                        href="/signout"
                         title="Sign Out"
                         style={{
                             display: "flex",
