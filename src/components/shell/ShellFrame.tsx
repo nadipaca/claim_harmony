@@ -122,7 +122,7 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
                         <Link
                             key={`${item.href}:${item.label}`}
                             href={item.href}
-                            title={collapsed ? item.label : undefined}
+                            title={item.label}
                             style={{
                                 display: "flex",
                                 alignItems: "center",
@@ -133,7 +133,7 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
                                 textDecoration: "none",
                                 fontSize: "14px",
                                 marginBottom: "4px",
-                                justifyContent: collapsed ? "center" : "flex-start",
+                                justifyContent: "flex-start",
                             }}
                         >
                             <Icon icon={item.icon} />
@@ -171,30 +171,42 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
                         >
                             {userName.charAt(0).toUpperCase()}
                         </div>
-                        <div style={{ minWidth: 0, opacity: collapsed ? 0 : 1, transition: "opacity 120ms ease" }}>
-                            <p style={{ color: "white", fontSize: "13px", fontWeight: "500", margin: 0, overflow: "hidden", textOverflow: "ellipsis" }}>
-                                {userName}
-                            </p>
-                            <p
-                                style={{
-                                    color: roleColor,
-                                    fontSize: "10px",
-                                    fontWeight: "600",
-                                    margin: 0,
-                                    textTransform: "uppercase",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                }}
-                            >
-                                {roleLabel}
-                            </p>
-                        </div>
+                        {!collapsed && (
+                            <div style={{ minWidth: 0 }}>
+                                <p
+                                    style={{
+                                        color: "white",
+                                        fontSize: "13px",
+                                        fontWeight: "500",
+                                        margin: 0,
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                >
+                                    {userName}
+                                </p>
+                                <p
+                                    style={{
+                                        color: roleColor,
+                                        fontSize: "10px",
+                                        fontWeight: "600",
+                                        margin: 0,
+                                        textTransform: "uppercase",
+                                        whiteSpace: "nowrap",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                    }}
+                                >
+                                    {roleLabel}
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     <Link
                         href="/api/auth/signout"
-                        title={collapsed ? "Sign Out" : undefined}
+                        title="Sign Out"
                         style={{
                             display: "flex",
                             alignItems: "center",
@@ -202,7 +214,8 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
                             color: "rgba(255,255,255,0.55)",
                             fontSize: "12px",
                             textDecoration: "none",
-                            justifyContent: collapsed ? "center" : "flex-start",
+                            justifyContent: "flex-start",
+                            paddingLeft: collapsed ?  "10px" :"20px",
                         }}
                     >
                         <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -212,7 +225,7 @@ export function ShellFrame({ children, navItems, userName, roleLabel, badgeColor
                                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                             />
                         </svg>
-                        <span style={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : "auto", overflow: "hidden" }}>Sign Out</span>
+                        {!collapsed && <span>Sign Out</span>}
                     </Link>
                 </div>
             </aside>

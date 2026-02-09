@@ -11,9 +11,9 @@ interface ClaimDetailViewProps {
     pageBackground?: string
 }
 
-export function ClaimDetailView({ claim, backHref, headerRight, pageBackground = "#F8FAFC" }: ClaimDetailViewProps) {
+export function ClaimDetailView({ claim, backHref, headerRight}: ClaimDetailViewProps) {
     return (
-        <div className="chClaimDetailPage" style={{ background: pageBackground, boxSizing: "border-box" }}>
+        <div className="chClaimDetailPage" style={{ boxSizing: "border-box" }}>
             <div
                 style={{
                     display: "flex",
@@ -242,7 +242,7 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                                             >
                                                 {claim.acceptedByContractor.name || claim.acceptedByContractor.email}
                                             </p>
-                                            <p style={{ color: "#1E3A8A", fontSize: "10px", fontWeight: "600" }}>
+                                            <p className="chClaimPartyMeta" style={{ color: "#1E3A8A", fontSize: "10px", fontWeight: "600" }}>
                                                 VETTED PLATINUM
                                             </p>
                                         </div>
@@ -308,7 +308,18 @@ export function ClaimDetailView({ claim, backHref, headerRight, pageBackground =
                                         >
                                             {claim.insuranceCompany.name}
                                         </p>
-                                        <p style={{ color: "#1E3A8A", fontSize: "11px" }}>Policy #998-221-X</p>
+                                        <a
+                                            href={claim.insuranceCompany.claimsPortalUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="chClaimsPortalButton"
+                                        >
+                                            Open Claims Portal
+                                            <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h9v9" />
+                                            </svg>
+                                        </a>
                                     </div>
                                 </div>
                             </div>

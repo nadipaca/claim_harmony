@@ -30,8 +30,8 @@ export default async function ConsumerLayout({
             roleColor="#D4AF37"
             navItems={[
                 { href: "/consumer/claims", label: "Dashboard", icon: "dashboard" },
-                { href: "/consumer/claims", label: "All Claims", icon: "claims" },
-                { href: "/consumer/claims", label: "Find Pros", icon: "users" },
+                // { href: "/consumer/claims", label: "All Claims", icon: "claims" },
+                // { href: "/consumer/claims", label: "Find Pros", icon: "users" },
             ]}
         >
             {children}

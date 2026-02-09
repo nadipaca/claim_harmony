@@ -31,8 +31,8 @@ export default async function AdminLayout({
             roleColor="#DC2626"
             navItems={[
                 { href: "/admin/claims", label: "Dashboard", icon: "dashboard" },
-                { href: "/admin/claims", label: "All Claims", icon: "claims" },
-                { href: "/admin/claims", label: "Users", icon: "users" },
+                // { href: "/admin/claims", label: "All Claims", icon: "claims" },
+                // { href: "/admin/claims", label: "Users", icon: "users" },
             ]}
         >
             {children}

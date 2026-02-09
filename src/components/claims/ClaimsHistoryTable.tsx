@@ -61,9 +61,9 @@ function SortControls({
     const isActiveDesc = sort.key === sortKey && sort.dir === "desc"
 
     return (
-        <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
             <span>{label}</span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+            <span style={{ display: "inline-flex", alignItems: "center"}}>
                 <button
                     type="button"
                     aria-label={`Sort ${label} ascending`}
@@ -109,6 +109,8 @@ export function ClaimsHistoryTable({
     baseHref: string
 }) {
     const [sort, setSort] = useState<{ key: SortKey; dir: SortDir }>({ key: "createdAt", dir: "desc" })
+    const [pageSize, setPageSize] = useState(25)
+    const [pageIndex, setPageIndex] = useState(0)
 
     const sortedRows = useMemo(() => {
         const next = [...rows]
@@ -118,6 +120,20 @@ export function ClaimsHistoryTable({
         })
         return next
     }, [rows, sort.dir, sort.key])
+
+    const pageCount = useMemo(() => {
+        if (sortedRows.length === 0) return 1
+        return Math.max(1, Math.ceil(sortedRows.length / pageSize))
+    }, [pageSize, sortedRows.length])
+
+    const safePageIndex = Math.min(pageIndex, pageCount - 1)
+    const startIndex = safePageIndex * pageSize
+    const endIndexExclusive = startIndex + pageSize
+    const pageRows = useMemo(() => sortedRows.slice(startIndex, endIndexExclusive), [endIndexExclusive, sortedRows, startIndex])
+
+    const rangeStart = sortedRows.length === 0 ? 0 : startIndex + 1
+    const loadedEnd = Math.min(endIndexExclusive, sortedRows.length)
+    const rangeEnd = Math.min(loadedEnd, totalCount)
 
     return (
         <div
@@ -215,7 +231,7 @@ export function ClaimsHistoryTable({
                 </thead>
 
                 <tbody>
-                    {sortedRows.map((row) => (
+                    {pageRows.map((row) => (
                         <tr key={row.id}>
                             <td style={{ padding: "16px 20px", color: "#0F172A", fontSize: "14px", whiteSpace: "nowrap" }}>
                                 {new Date(row.createdAtIso).toLocaleDateString("en-US", {
@@ -276,42 +292,96 @@ export function ClaimsHistoryTable({
                 style={{
                     padding: "12px 20px",
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent: "flex-end",
                     alignItems: "center",
                     color: "#64748B",
                     fontSize: "13px",
                     minWidth: "820px",
+                    background: "#F8FAFC",
+                    borderTop: "1px solid #E2E8F0",
+                    gap: "12px",
+                    flexWrap: "wrap",
                 }}
             >
-                <span>
-                    Showing 1-{Math.min(rows.length, sortedRows.length)} of {totalCount}
-                </span>
-                <div style={{ display: "flex", gap: "8px" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: "10px", marginLeft: "auto" }}>
+                    <label style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ whiteSpace: "nowrap" }}>Rows per page</span>
+                        <select
+                            value={pageSize}
+                            onChange={(e) => {
+                                setPageSize(Number(e.target.value))
+                                setPageIndex(0)
+                            }}
+                            style={{
+                                height: "32px",
+                                borderRadius: "8px",
+                                border: "1px solid #CBD5E1",
+                                background: "white",
+                                color: "#0F172A",
+                                fontSize: "13px",
+                                padding: "0 10px",
+                                outline: "none",
+                            }}
+                        >
+                            {[10, 25, 50, 100].map((n) => (
+                                <option key={n} value={n}>
+                                    {n}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+
+                    <span style={{ whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>
+                        {rangeStart}-{rangeEnd} of {totalCount}
+                    </span>
+                </div>
+
+                <div style={{ display: "flex", gap: "6px" }}>
                     <button
                         type="button"
+                        aria-label="Previous page"
+                        disabled={safePageIndex <= 0}
+                        onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
                         style={{
-                            padding: "6px 12px",
-                            border: "1px solid #787878ff",
-                            borderRadius: "6px",
+                            width: "34px",
+                            height: "32px",
+                            border: "1px solid #CBD5E1",
+                            borderRadius: "8px",
                             background: "white",
-                            color: "#64748B",
-                            cursor: "pointer",
+                            color: "#0F172A",
+                            cursor: safePageIndex <= 0 ? "not-allowed" : "pointer",
+                            opacity: safePageIndex <= 0 ? 0.5 : 1,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
                         }}
                     >
-                        Previous
+                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
                     </button>
                     <button
                         type="button"
+                        aria-label="Next page"
+                        disabled={safePageIndex >= pageCount - 1}
+                        onClick={() => setPageIndex((p) => Math.min(pageCount - 1, p + 1))}
                         style={{
-                            padding: "6px 12px",
-                            border: "1px solid #787878ff",
-                            borderRadius: "6px",
+                            width: "34px",
+                            height: "32px",
+                            border: "1px solid #CBD5E1",
+                            borderRadius: "8px",
                             background: "white",
-                            color: "#64748B",
-                            cursor: "pointer",
+                            color: "#0F172A",
+                            cursor: safePageIndex >= pageCount - 1 ? "not-allowed" : "pointer",
+                            opacity: safePageIndex >= pageCount - 1 ? 0.5 : 1,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
                         }}
                     >
-                        Next
+                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
                     </button>
                 </div>
             </div>

@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { createClaim } from './actions'
 import Link from 'next/link'
+import Image from "next/image"
 
 const CLAIM_TYPES = [
     { value: 'ROOF', label: 'Roof' },
@@ -181,7 +182,7 @@ export default function NewClaimForm({
                         height: '32px',
                         borderRadius: '50%',
                         background: step >= 2 ? '#1E3A8A' : '#787878ff',
-                        color: step >= 2 ? 'white' : '#64748B',
+                        color: step >= 2 ? 'white' : 'white',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -202,7 +203,7 @@ export default function NewClaimForm({
                         height: '32px',
                         borderRadius: '50%',
                         background: step >= 3 ? '#1E3A8A' : '#787878ff',
-                        color: step >= 3 ? 'white' : '#64748B',
+                        color: step >= 3 ? 'white' : 'white',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -245,7 +246,12 @@ export default function NewClaimForm({
                 {step === 1 && (
                     <>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-                            <span style={{ fontSize: '18px' }}>🏠</span>
+                            <Image
+                                src="/home.svg"
+                                alt=""
+                                width={18}
+                                height={18}
+                            />
                             <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#0F172A' }}>Property & Insurance</h2>
                         </div>
 
@@ -293,28 +299,52 @@ export default function NewClaimForm({
                             }}>
                                 Insurance Carrier
                             </label>
-                            <select
-                                value={insuranceCompanyId}
-                                onChange={(e) => setInsuranceCompanyId(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '12px 14px',
-                                    background: '#F8FAFC',
-                                    border: '1px solid #787878ff',
-                                    borderRadius: '8px',
-                                    fontSize: '14px',
-                                    color: insuranceCompanyId ? '#0F172A' : '#94A3B8',
-                                    boxSizing: 'border-box',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                <option value="">Select your carrier...</option>
-                                {insuranceCompanies.map((company) => (
-                                    <option key={company.id} value={company.id}>
-                                        {company.name}
-                                    </option>
-                                ))}
-                            </select>
+                            <div style={{ position: 'relative' }}>
+                                <select
+                                    value={insuranceCompanyId}
+                                    onChange={(e) => setInsuranceCompanyId(e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px 46px 12px 14px',
+                                        background: '#F8FAFC',
+                                        border: '1px solid #787878ff',
+                                        borderRadius: '8px',
+                                        fontSize: '14px',
+                                        color: insuranceCompanyId ? '#0F172A' : '#94A3B8',
+                                        boxSizing: 'border-box',
+                                        cursor: 'pointer',
+                                        appearance: 'none',
+                                        WebkitAppearance: 'none',
+                                        MozAppearance: 'none'
+                                    }}
+                                >
+                                    <option value="">Select your carrier...</option>
+                                    {insuranceCompanies.map((company) => (
+                                        <option key={company.id} value={company.id}>
+                                            {company.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <svg
+                                    aria-hidden="true"
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    style={{
+                                        position: 'absolute',
+                                        right: '14px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        color: '#64748B',
+                                        pointerEvents: 'none'
+                                    }}
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                                </svg>
+                            </div>
                         </div>
 
                         {/* Date of Loss */}
@@ -385,7 +415,12 @@ export default function NewClaimForm({
                 {step === 2 && (
                     <>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-                            <span style={{ fontSize: '18px' }}>📋</span>
+                            <Image
+                                src="/details.svg"
+                                alt=""
+                                width={20}
+                                height={20}
+                            />
                             <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#0F172A' }}>Loss Details</h2>
                         </div>
 

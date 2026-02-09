@@ -1,6 +1,7 @@
 import { requireRole } from "@/lib/rbac"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
+import Image from "next/image"
 import { Role, Claim, InsuranceCompany } from "@prisma/client"
 
 // Type for claims with included relations
@@ -89,8 +90,9 @@ export default async function ContractorClaimsPage({
                     <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0F172A', marginBottom: '4px' }}>
                         Job Board
                     </h1>
-                    <p style={{ color: '#64748B', fontSize: '14px' }}>
-                        Welcome back, {userName}.
+                    {/* Subtitle */}
+                    <p style={{ color: '#64748B', fontSize: '14px', marginBottom: '24px' }}>
+                        Review available claims in your area.
                     </p>
                 </div>
                 {/* <div style={{
@@ -119,11 +121,6 @@ export default async function ContractorClaimsPage({
                     />
                 </div> */}
             </div>
-
-            {/* Subtitle */}
-            <p style={{ color: '#64748B', fontSize: '14px', marginBottom: '24px' }}>
-                Review available claims in your area.
-            </p>
 
             {/* Tabs */}
             <div style={{ display: 'flex', gap: '24px', borderBottom: '1px solid #787878ff', marginBottom: '24px' }}>
@@ -217,9 +214,12 @@ export default async function ContractorClaimsPage({
                                     justifyContent: 'center',
                                     flexShrink: 0
                                 }}>
-                                    <svg width="24" height="24" fill="none" stroke="#D4AF37" strokeWidth="1.5" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
+                                    <Image
+                                        src="/home.svg"
+                                        alt=""
+                                        width={24}
+                                        height={24}
+                                    />
                                 </div>
 
                                 {/* Claim Info */}

@@ -61,15 +61,13 @@ body {
 }
 
 .chClaimPartyCards {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   align-items: stretch;
 }
 
 .chClaimPartyCard {
-  flex: 1 1 240px;
-  min-width: 220px;
   height: 120px;
   overflow: hidden;
   box-sizing: border-box;
@@ -86,8 +84,37 @@ body {
     padding: 16px;
   }
   .chClaimPartyCard {
-    min-width: 100%;
+    height: auto;
   }
+  .chClaimPartyMeta {
+    display: none;
+  }
+}
+
+/* Claim detail: insurer portal button */
+.chClaimsPortalButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--ch-navy);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  line-height: 1;
+  box-shadow: 0 10px 20px -14px rgba(30, 58, 138, 0.7);
+}
+
+.chClaimsPortalButton:hover {
+  background: #1E40AF;
+}
+
+.chClaimsPortalButton:focus-visible {
+  outline: 3px solid rgba(30, 58, 138, 0.25);
+  outline-offset: 2px;
 }
 
 /* Utility Classes for Design System */
