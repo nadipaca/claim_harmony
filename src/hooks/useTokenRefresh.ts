@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation'
 export function useTokenRefresh() {
     const { data: session, status, update } = useSession()
     const router = useRouter()
-    const refreshTimeoutRef = useRef<NodeJS.Timeout>()
+    const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     const refreshToken = useCallback(async () => {
         try {
