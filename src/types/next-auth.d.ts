@@ -15,6 +15,7 @@ declare module "next-auth" {
         email: string
         name?: string | null
         role: "CONSUMER" | "CONTRACTOR" | "ADMIN"
+        refreshToken?: string
     }
 }
 
@@ -23,5 +24,7 @@ declare module "next-auth/jwt" {
         id: string
         role: "CONSUMER" | "CONTRACTOR" | "ADMIN"
         email: string
+        exp: number
+        refreshToken?: string
     }
 }
