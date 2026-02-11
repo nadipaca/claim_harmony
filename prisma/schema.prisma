@@ -49,6 +49,7 @@ model User {
   claimsAccepted Claim[]         @relation("ClaimsAcceptedByContractor")
   events         ClaimEvent[]
   documents      ClaimDocument[]
+  refreshTokens  RefreshToken[]
 }
 
 model InsuranceCompany {
@@ -117,4 +118,16 @@ model ClaimDocument {
   uploadedByUser   User   @relation(fields: [uploadedByUserId], references: [id])
 
   uploadedAt DateTime @default(now())
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
 }

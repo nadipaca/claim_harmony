@@ -2,6 +2,7 @@ import { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { prisma } from "./prisma"
 import bcrypt from "bcryptjs"
+import { generateRefreshToken, storeRefreshToken, revokeAllUserTokens } from "./refresh-token"
 
 // Generate a dummy hash at module load time for constant-time comparison
 // This prevents timing attacks by ensuring we always perform bcrypt.compare
@@ -74,12 +75,16 @@ export const authOptions: AuthOptions = {
                     return null
                 }
 
-                // Return user object
+                // Return user object with refresh token for cookie setting
+                const refreshToken = generateRefreshToken()
+                await storeRefreshToken(user.id, refreshToken)
+
                 return {
                     id: user.id,
                     email: user.email,
                     name: user.name,
-                    role: user.role
+                    role: user.role,
+                    refreshToken // Will be used to set cookie
                 }
             }
         })
@@ -91,6 +96,12 @@ export const authOptions: AuthOptions = {
                 token.id = user.id
                 token.role = user.role
                 token.email = user.email
+                // Add explicit expiry timestamp (15 minutes from now)
+                token.exp = Math.floor(Date.now() / 1000) + (15 * 60)
+                // Store refresh token temporarily for cookie setting
+                if (user.refreshToken) {
+                    token.refreshToken = user.refreshToken
+                }
             }
             return token
         },
@@ -105,7 +116,22 @@ export const authOptions: AuthOptions = {
         }
     },
     session: {
-        strategy: "jwt"
+        strategy: "jwt",
+        maxAge: 15 * 60, // 15 minutes
+    },
+    jwt: {
+        maxAge: 15 * 60, // 15 minutes
+    },
+    events: {
+        async signOut({ token }) {
+            // Revoke all refresh tokens for user on signout
+            if (token?.id) {
+                await revokeAllUserTokens(token.id as string)
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(`[Auth] Revoked all tokens for user: ${token.id}`)
+                }
+            }
+        }
     },
     pages: {
         signIn: "/login",

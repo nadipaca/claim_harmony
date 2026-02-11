@@ -222,7 +222,7 @@ export default async function ContractorClaimsPage({
 
                                 {/* Claim Info */}
                                 <div style={{ flex: 1, minWidth: 0, width: '100%' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
                                         <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F172A', margin: 0 }}>
                                             {claim.address.split(',')[0]}
                                             {claim.address.includes(',') && (
@@ -252,7 +252,7 @@ export default async function ContractorClaimsPage({
                                     }}>
                                         {claim.description}
                                     </p>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94A3B8', fontSize: '13px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94A3B8', fontSize: '13px', justifyContent: 'center' }}>
                                         <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                                             <circle cx="12" cy="12" r="10" />
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
