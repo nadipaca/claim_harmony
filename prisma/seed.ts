@@ -35,7 +35,7 @@ async function main() {
         },
     })
 
-    const stateFarm = await prisma.insuranceCompany.create({
+    await prisma.insuranceCompany.create({
         data: {
             key: 'statefarm',
             name: 'State Farm',
@@ -64,7 +64,7 @@ async function main() {
         },
     })
 
-    const admin = await prisma.user.create({
+    await prisma.user.create({
         data: {
             email: 'admin@test.com',
             name: 'Test Admin',

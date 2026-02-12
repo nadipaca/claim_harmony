@@ -41,7 +41,6 @@ export default function NewClaimForm({
 
     // File upload state
     const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-    const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const selectedInsurer = insuranceCompanies.find(c => c.id === insuranceCompanyId)
@@ -78,7 +77,6 @@ export default function NewClaimForm({
         try {
             // Upload files first
             const files = await uploadFiles()
-            setUploadedFiles(files)
 
             const formData = new FormData()
             formData.set('address', address)
@@ -717,17 +715,10 @@ export default function NewClaimForm({
                                                         height: '40px',
                                                         borderRadius: '6px',
                                                         overflow: 'hidden',
+                                                        position: 'relative',
                                                         flexShrink: 0
                                                     }}>
-                                                        <img
-                                                            src={URL.createObjectURL(file)}
-                                                            alt={file.name}
-                                                            style={{
-                                                                width: '100%',
-                                                                height: '100%',
-                                                                objectFit: 'cover'
-                                                            }}
-                                                        />
+                                                        <Image src={URL.createObjectURL(file)} alt={file.name} fill style={{ objectFit: 'cover' }} unoptimized />
                                                     </div>
                                                 ) : (
                                                     <div style={{
@@ -859,4 +850,3 @@ export default function NewClaimForm({
         </div>
     )
 }
-

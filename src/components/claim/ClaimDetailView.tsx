@@ -353,7 +353,7 @@ export function ClaimDetailView({ claim, backHref, headerRight}: ClaimDetailView
                 </div>
 
                 <div style={{ minWidth: 0 }}>
-                    <ClaimDocuments claimId={claim.id} claimNumber={claim.claimNumber} documents={claim.documents} />
+                    <ClaimDocuments claimNumber={claim.claimNumber} documents={claim.documents} />
                 </div>
             </div>
         </div>

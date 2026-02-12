@@ -33,13 +33,11 @@ function ArrowDown({ active }: { active: boolean }) {
 
 function SortControls({
     label,
-    columnKey,
     isActiveAsc,
     isActiveDesc,
     onSort,
 }: {
     label: string
-    columnKey: string
     isActiveAsc: boolean
     isActiveDesc: boolean
     onSort: (dir: SortDir) => void
@@ -179,7 +177,6 @@ export function SortablePaginatedTable<Row extends { id: string }>({
                                     {isSortable ? (
                                         <SortControls
                                             label={col.label}
-                                            columnKey={col.key}
                                             isActiveAsc={isActiveAsc}
                                             isActiveDesc={isActiveDesc}
                                             onSort={(dir) => {

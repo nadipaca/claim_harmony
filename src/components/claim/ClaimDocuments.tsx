@@ -9,7 +9,6 @@ type DocumentWithUploader = ClaimDocument & {
 }
 
 interface ClaimDocumentsProps {
-    claimId: string
     claimNumber: string
     documents: DocumentWithUploader[]
 }
@@ -60,7 +59,7 @@ function FileIcon({ filename }: { filename: string }) {
     return <DocIcon />
 }
 
-export function ClaimDocuments({ claimId, claimNumber, documents }: ClaimDocumentsProps) {
+export function ClaimDocuments({ claimNumber, documents }: ClaimDocumentsProps) {
     const router = useRouter()
     const [isUploading, setIsUploading] = useState(false)
     const [error, setError] = useState<string | null>(null)

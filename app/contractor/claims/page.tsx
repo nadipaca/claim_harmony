@@ -61,8 +61,6 @@ export default async function ContractorClaimsPage({
     const { tab } = await searchParams
     const activeTab = tab === 'active' ? 'active' : 'available'
 
-    const userName = user.name || user.email?.split('@')[0] || 'Contractor'
-
     // Fetch available claims (status = NEW)
     const availableClaims = await prisma.claim.findMany({
         where: { status: 'NEW' },
@@ -285,4 +283,3 @@ export default async function ContractorClaimsPage({
         </div>
     )
 }
-

@@ -40,6 +40,7 @@ export async function GET() {
             },
         })
     } catch (error) {
+        console.error('Test data fetch error:', error)
         return NextResponse.json(
             { success: false, error: 'Failed to fetch data' },
             { status: 500 }

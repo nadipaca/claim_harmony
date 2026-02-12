@@ -83,6 +83,7 @@ export default function SignupPage() {
 
             router.push(roleRedirects[role])
         } catch (err) {
+            console.error('Registration error:', err)
             setError('An error occurred during registration')
             setLoading(false)
         }
